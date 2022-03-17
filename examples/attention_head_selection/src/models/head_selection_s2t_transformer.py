@@ -82,7 +82,7 @@ class HeadSelectionS2TTransformerModel(S2TTransformerModel):
             encoder = HeadSelectionS2TTransformerEncoder(args)
         else:
             encoder = S2TTransformerEncoder(args)
-        pretraining_path = getattr(args, "load_pretrained_encoder_from", None)
+        pretraining_path = args.get("load_pretrained_encoder_from", None)
         if pretraining_path is not None:
             if not Path(pretraining_path).exists():
                 logger.warning(
@@ -152,19 +152,19 @@ class HeadSelectionTransformerDecoderScriptable(HeadSelectionTransformerDecoder)
 @register_model_architecture(model_name="head_selection_s2t_transformer", arch_name="head_selection_s2t_transformer")
 def base_architecture(args):
     s2t_base_architecture(args)
-    args.encoder_attn_head_select = getattr(args, "encoder_attn_head_select", False)
-    args.decoder_self_attn_head_select = getattr(args, "decoder_self_attn_head_select", False)
-    args.dec_enc_attn_head_select = getattr(args, "dec_enc_attn_head_select", False)
-    args.total_encoder_attention_heads = getattr(args, "total_encoder_attention_heads", 8)
-    args.total_decoder_attention_heads = getattr(args, "total_decoder_attention_heads", 8)
-    args.attn_head_select_strategy = getattr(args, "attn_head_select_strategy", "group")
+    args.encoder_attn_head_select = args.get("encoder_attn_head_select", False)
+    args.decoder_self_attn_head_select = args.get("decoder_self_attn_head_select", False)
+    args.dec_enc_attn_head_select = args.get("dec_enc_attn_head_select", False)
+    args.total_encoder_attention_heads = args.get("total_encoder_attention_heads", 8)
+    args.total_decoder_attention_heads = args.get("total_decoder_attention_heads", 8)
+    args.attn_head_select_strategy = args.get("attn_head_select_strategy", "group")
 
 
 @register_model_architecture("head_selection_s2t_transformer", "head_selection_s2t_transformer_s")
 def head_selection_s2t_transformer_s(args):
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 256)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 256 * 8)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 4)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 4)
-    args.dropout = getattr(args, "dropout", 0.1)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 256)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 256 * 8)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 4)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 4)
+    args.dropout = args.get("dropout", 0.1)
     base_architecture(args)

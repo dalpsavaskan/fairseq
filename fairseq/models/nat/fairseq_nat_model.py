@@ -132,14 +132,14 @@ class FairseqNATModel(TransformerModel):
     @classmethod
     def build_decoder(cls, args, tgt_dict, embed_tokens):
         decoder = FairseqNATDecoder(args, tgt_dict, embed_tokens)
-        if getattr(args, "apply_bert_init", False):
+        if args.get("apply_bert_init", False):
             decoder.apply(init_bert_params)
         return decoder
 
     @classmethod
     def build_encoder(cls, args, src_dict, embed_tokens):
         encoder = FairseqNATEncoder(args, src_dict, embed_tokens)
-        if getattr(args, "apply_bert_init", False):
+        if args.get("apply_bert_init", False):
             encoder.apply(init_bert_params)
         return encoder
 

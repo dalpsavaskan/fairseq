@@ -520,7 +520,7 @@ class XMTransformerModel(FairseqEncoderDecoderModel):
 
         encoder = Wav2VecEncoderWithAdaptor(_args)
         return cls.maybe_load_pretrained(
-            encoder, getattr(args, "load_pretrained_encoder_from", None)
+            encoder, args.get("load_pretrained_encoder_from", None)
         )
 
     @classmethod
@@ -535,7 +535,7 @@ class XMTransformerModel(FairseqEncoderDecoderModel):
 
         decoder = TransformerDecoder(_args, task.target_dictionary, embed_tokens)
         decoder = cls.maybe_load_pretrained(
-            decoder, getattr(args, "load_pretrained_decoder_from", None)
+            decoder, args.get("load_pretrained_decoder_from", None)
         )
 
         for k, p in decoder.named_parameters():
@@ -594,86 +594,83 @@ class XMTransformerModel(FairseqEncoderDecoderModel):
 
 
 def set_default_w2v_encoder_args(args):
-    args.no_pretrained_weights = getattr(args, "no_pretrained_weights", False)
-    args.dropout_input = getattr(args, "dropout_input", 0)
-    args.final_dropout = getattr(args, "final_dropout", 0)
-    args.apply_mask = getattr(args, "apply_mask", False)
-    args.dropout = getattr(args, "dropout", 0)
-    args.attention_dropout = getattr(args, "attention_dropout", 0)
-    args.activation_dropout = getattr(args, "activation_dropout", 0)
+    args.no_pretrained_weights = args.get("no_pretrained_weights", False)
+    args.dropout_input = args.get("dropout_input", 0)
+    args.final_dropout = args.get("final_dropout", 0)
+    args.apply_mask = args.get("apply_mask", False)
+    args.dropout = args.get("dropout", 0)
+    args.attention_dropout = args.get("attention_dropout", 0)
+    args.activation_dropout = args.get("activation_dropout", 0)
 
-    args.mask_length = getattr(args, "mask_length", 10)
-    args.mask_prob = getattr(args, "mask_prob", 0.5)
-    args.mask_selection = getattr(args, "mask_selection", "static")
-    args.mask_other = getattr(args, "mask_other", 0)
-    args.no_mask_overlap = getattr(args, "no_mask_overlap", False)
-    args.mask_channel_length = getattr(args, "mask_channel_length", 10)
-    args.mask_channel_prob = getattr(args, "mask_channel_prob", 0.5)
-    args.mask_channel_before = getattr(args, "mask_channel_before", False)
-    args.mask_channel_selection = getattr(args, "mask_channel_selection", "static")
-    args.mask_channel_other = getattr(args, "mask_channel_other", 0)
-    args.no_mask_channel_overlap = getattr(args, "no_mask_channel_overlap", False)
+    args.mask_length = args.get("mask_length", 10)
+    args.mask_prob = args.get("mask_prob", 0.5)
+    args.mask_selection = args.get("mask_selection", "static")
+    args.mask_other = args.get("mask_other", 0)
+    args.no_mask_overlap = args.get("no_mask_overlap", False)
+    args.mask_channel_length = args.get("mask_channel_length", 10)
+    args.mask_channel_prob = args.get("mask_channel_prob", 0.5)
+    args.mask_channel_before = args.get("mask_channel_before", False)
+    args.mask_channel_selection = args.get("mask_channel_selection", "static")
+    args.mask_channel_other = args.get("mask_channel_other", 0)
+    args.no_mask_channel_overlap = args.get("no_mask_channel_overlap", False)
 
-    args.freeze_finetune_updates = getattr(args, "freeze_finetune_updates", 0)
+    args.freeze_finetune_updates = args.get("freeze_finetune_updates", 0)
     args.feature_grad_mult = 0.1
-    args.layerdrop = getattr(args, "layerdrop", 0.0)
+    args.layerdrop = args.get("layerdrop", 0.0)
 
-    args.normalize = getattr(args, "normalize", False)
-    args.finetune_w2v_params = getattr(args, "finetune_w2v_params", "all")
-    args.w2v_freezing_updates = getattr(args, "w2v_freezing_updates", None)
+    args.normalize = args.get("normalize", False)
+    args.finetune_w2v_params = args.get("finetune_w2v_params", "all")
+    args.w2v_freezing_updates = args.get("w2v_freezing_updates", None)
 
 
 def set_default_adaptor_args(args):
-    args.adaptor_n_layers = getattr(args, "adaptor_n_layers", 3)
-    args.adaptor_kernel_size = getattr(args, "adaptor_kernel_size", 3)
-    args.adaptor_stride = getattr(args, "adaptor_stride", 2)
-    args.adaptor_layerdrop = getattr(args, "adaptor_layerdrop", 0.0)
-    args.adaptor_layernorm = getattr(args, "adaptor_layernorm", False)
-    args.adaptor_proj = getattr(args, "adaptor_proj", False)
+    args.adaptor_n_layers = args.get("adaptor_n_layers", 3)
+    args.adaptor_kernel_size = args.get("adaptor_kernel_size", 3)
+    args.adaptor_stride = args.get("adaptor_stride", 2)
+    args.adaptor_layerdrop = args.get("adaptor_layerdrop", 0.0)
+    args.adaptor_layernorm = args.get("adaptor_layernorm", False)
+    args.adaptor_proj = args.get("adaptor_proj", False)
 
 
 def set_default_transformer_decoder_args(args):
-    args.decoder_embed_path = getattr(args, "decoder_embed_path", None)
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 1024)
-    args.decoder_ffn_embed_dim = getattr(args, "decoder_ffn_embed_dim", 4 * 1024)
-    args.decoder_layers = getattr(args, "decoder_layers", 12)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 16)
-    args.decoder_normalize_before = getattr(args, "decoder_normalize_before", False)
-    args.decoder_learned_pos = getattr(args, "decoder_learned_pos", False)
-    args.decoder_layerdrop = getattr(args, "decoder_layerdrop", 0.0)
-    args.adaptive_input = getattr(args, "adaptive_input", False)
-    args.decoder_attention_dropout = getattr(args, "decoder_attention_dropout", 0.0)
-    args.decoder_activation_dropout = getattr(args, "decoder_activation_dropout", 0.0)
-    args.decoder_dropout = getattr(args, "decoder_dropout", 0.1)
-    args.adaptive_softmax_cutoff = getattr(args, "adaptive_softmax_cutoff", None)
-    args.adaptive_softmax_dropout = getattr(args, "adaptive_softmax_dropout", 0)
-    args.share_decoder_input_output_embed = getattr(
-        args, "share_decoder_input_output_embed", False
+    args.decoder_embed_path = args.get("decoder_embed_path", None)
+    args.decoder_embed_dim = args.get("decoder_embed_dim", 1024)
+    args.decoder_ffn_embed_dim = args.get("decoder_ffn_embed_dim", 4 * 1024)
+    args.decoder_layers = args.get("decoder_layers", 12)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 16)
+    args.decoder_normalize_before = args.get("decoder_normalize_before", False)
+    args.decoder_learned_pos = args.get("decoder_learned_pos", False)
+    args.decoder_layerdrop = args.get("decoder_layerdrop", 0.0)
+    args.adaptive_input = args.get("adaptive_input", False)
+    args.decoder_attention_dropout = args.get("decoder_attention_dropout", 0.0)
+    args.decoder_activation_dropout = args.get("decoder_activation_dropout", 0.0)
+    args.decoder_dropout = args.get("decoder_dropout", 0.1)
+    args.adaptive_softmax_cutoff = args.get("adaptive_softmax_cutoff", None)
+    args.adaptive_softmax_dropout = args.get("adaptive_softmax_dropout", 0)
+    args.share_decoder_input_output_embed = args.get("share_decoder_input_output_embed", False
     )
-    args.no_token_positional_embeddings = getattr(
-        args, "no_token_positional_embeddings", False
+    args.no_token_positional_embeddings = args.get("no_token_positional_embeddings", False
     )
 
-    args.decoder_output_dim = getattr(
-        args, "decoder_output_dim", args.decoder_embed_dim
+    args.decoder_output_dim = args.get("decoder_output_dim", args.decoder_embed_dim
     )
-    args.decoder_input_dim = getattr(args, "decoder_input_dim", args.decoder_embed_dim)
+    args.decoder_input_dim = args.get("decoder_input_dim", args.decoder_embed_dim)
 
-    args.no_scale_embedding = getattr(args, "no_scale_embedding", False)
-    args.quant_noise_pq = getattr(args, "quant_noise_pq", 0)
-    args.layernorm_embedding = getattr(args, "layernorm_embedding", False)
+    args.no_scale_embedding = args.get("no_scale_embedding", False)
+    args.quant_noise_pq = args.get("quant_noise_pq", 0)
+    args.layernorm_embedding = args.get("layernorm_embedding", False)
 
-    args.activation_fn = getattr(args, "activation_fn", "gelu")
-    args.pooler_activation_fn = getattr(args, "pooler_activation_fn", "tanh")
-    args.pooler_dropout = getattr(args, "pooler_dropout", 0.0)
+    args.activation_fn = args.get("activation_fn", "gelu")
+    args.pooler_activation_fn = args.get("pooler_activation_fn", "tanh")
+    args.pooler_dropout = args.get("pooler_dropout", 0.0)
 
-    args.finetune_decoder_params = getattr(args, "finetune_decoder_params", "all")
+    args.finetune_decoder_params = args.get("finetune_decoder_params", "all")
 
 
 def set_default_general_args(args):
-    args.checkpoint_activations = getattr(args, "checkpoint_activations", False)
-    args.offload_activations = getattr(args, "offload_activations", False)
-    args.min_params_to_wrap = getattr(args, "min_params_to_wrap", int(1e8))
+    args.checkpoint_activations = args.get("checkpoint_activations", False)
+    args.offload_activations = args.get("offload_activations", False)
+    args.min_params_to_wrap = args.get("min_params_to_wrap", int(1e8))
 
 
 @register_model_architecture(model_name="xm_transformer", arch_name="xm_transformer")

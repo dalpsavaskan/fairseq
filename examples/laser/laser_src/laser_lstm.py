@@ -562,24 +562,22 @@ def Linear(in_features, out_features, bias=True, dropout=0):
 
 @register_model_architecture("laser_lstm", "laser_lstm")
 def base_architecture(args):
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 512)
-    args.encoder_embed_path = getattr(args, "encoder_embed_path", None)
-    args.encoder_hidden_size = getattr(
-        args, "encoder_hidden_size", args.encoder_embed_dim
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 512)
+    args.encoder_embed_path = args.get("encoder_embed_path", None)
+    args.encoder_hidden_size = args.get("encoder_hidden_size", args.encoder_embed_dim
     )
-    args.encoder_layers = getattr(args, "encoder_layers", 1)
-    args.encoder_bidirectional = getattr(args, "encoder_bidirectional", False)
-    args.encoder_dropout_in = getattr(args, "encoder_dropout_in", args.dropout)
-    args.encoder_dropout_out = getattr(args, "encoder_dropout_out", args.dropout)
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 512)
-    args.decoder_embed_path = getattr(args, "decoder_embed_path", None)
-    args.decoder_hidden_size = getattr(
-        args, "decoder_hidden_size", args.decoder_embed_dim
+    args.encoder_layers = args.get("encoder_layers", 1)
+    args.encoder_bidirectional = args.get("encoder_bidirectional", False)
+    args.encoder_dropout_in = args.get("encoder_dropout_in", args.dropout)
+    args.encoder_dropout_out = args.get("encoder_dropout_out", args.dropout)
+    args.decoder_embed_dim = args.get("decoder_embed_dim", 512)
+    args.decoder_embed_path = args.get("decoder_embed_path", None)
+    args.decoder_hidden_size = args.get("decoder_hidden_size", args.decoder_embed_dim
     )
-    args.decoder_layers = getattr(args, "decoder_layers", 1)
-    args.decoder_out_embed_dim = getattr(args, "decoder_out_embed_dim", 512)
-    args.decoder_dropout_in = getattr(args, "decoder_dropout_in", args.dropout)
-    args.decoder_dropout_out = getattr(args, "decoder_dropout_out", args.dropout)
-    args.decoder_zero_init = getattr(args, "decoder_zero_init", "0")
-    args.decoder_lang_embed_dim = getattr(args, "decoder_lang_embed_dim", 0)
-    args.fixed_embeddings = getattr(args, "fixed_embeddings", False)
+    args.decoder_layers = args.get("decoder_layers", 1)
+    args.decoder_out_embed_dim = args.get("decoder_out_embed_dim", 512)
+    args.decoder_dropout_in = args.get("decoder_dropout_in", args.dropout)
+    args.decoder_dropout_out = args.get("decoder_dropout_out", args.dropout)
+    args.decoder_zero_init = args.get("decoder_zero_init", "0")
+    args.decoder_lang_embed_dim = args.get("decoder_lang_embed_dim", 0)
+    args.fixed_embeddings = args.get("fixed_embeddings", False)

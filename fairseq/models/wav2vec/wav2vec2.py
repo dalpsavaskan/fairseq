@@ -953,7 +953,7 @@ class TransformerEncoder(nn.Module):
         self.embedding_dim = args.encoder_embed_dim
         self.required_seq_len_multiple = args.required_seq_len_multiple
 
-        pos_conv_depth = getattr(args, "pos_conv_depth", 1)
+        pos_conv_depth = args.get("pos_conv_depth", 1)
         if pos_conv_depth > 1:
             num_layers = args.pos_conv_depth
             k = max(3, args.conv_pos // num_layers)

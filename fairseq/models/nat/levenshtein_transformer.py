@@ -64,7 +64,7 @@ class LevenshteinTransformerModel(FairseqNATModel):
     @classmethod
     def build_decoder(cls, args, tgt_dict, embed_tokens):
         decoder = LevenshteinTransformerDecoder(args, tgt_dict, embed_tokens)
-        if getattr(args, "apply_bert_init", False):
+        if args.get("apply_bert_init", False):
             decoder.apply(init_bert_params)
         return decoder
 
@@ -278,7 +278,7 @@ class LevenshteinTransformerDecoder(FairseqNATDecoder):
         self.bos = dictionary.bos()
         self.unk = dictionary.unk()
         self.eos = dictionary.eos()
-        self.sampling_for_deletion = getattr(args, "sampling_for_deletion", False)
+        self.sampling_for_deletion = args.get("sampling_for_deletion", False)
         self.embed_mask_ins = Embedding(256, self.output_embed_dim * 2, None)
         self.embed_word_del = Embedding(2, self.output_embed_dim, None)
 
@@ -288,7 +288,7 @@ class LevenshteinTransformerDecoder(FairseqNATDecoder):
 
         # copy layers for mask-predict/deletion
         self.layers_msk = None
-        if getattr(args, "no_share_maskpredictor", False):
+        if args.get("no_share_maskpredictor", False):
             self.layers_msk = nn.ModuleList(
                 [
                     TransformerDecoderLayer(args, no_encoder_attn)
@@ -296,7 +296,7 @@ class LevenshteinTransformerDecoder(FairseqNATDecoder):
                 ]
             )
         self.layers_del = None
-        if getattr(args, "no_share_discriminator", False):
+        if args.get("no_share_discriminator", False):
             self.layers_del = nn.ModuleList(
                 [
                     TransformerDecoderLayer(args, no_encoder_attn)
@@ -304,9 +304,8 @@ class LevenshteinTransformerDecoder(FairseqNATDecoder):
                 ]
             )
 
-        if getattr(args, "share_discriminator_maskpredictor", False):
-            assert getattr(
-                args, "no_share_discriminator", False
+        if args.get("share_discriminator_maskpredictor", False):
+            assert args.get("no_share_discriminator", False
             ), "must set saperate discriminator"
             self.layers_msk = self.layers_del
 
@@ -429,50 +428,45 @@ class LevenshteinTransformerDecoder(FairseqNATDecoder):
 
 @register_model_architecture("levenshtein_transformer", "levenshtein_transformer")
 def levenshtein_base_architecture(args):
-    args.encoder_embed_path = getattr(args, "encoder_embed_path", None)
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 512)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 2048)
-    args.encoder_layers = getattr(args, "encoder_layers", 6)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 8)
-    args.encoder_normalize_before = getattr(args, "encoder_normalize_before", False)
-    args.encoder_learned_pos = getattr(args, "encoder_learned_pos", False)
-    args.decoder_embed_path = getattr(args, "decoder_embed_path", None)
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", args.encoder_embed_dim)
-    args.decoder_ffn_embed_dim = getattr(
-        args, "decoder_ffn_embed_dim", args.encoder_ffn_embed_dim
+    args.encoder_embed_path = args.get("encoder_embed_path", None)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 512)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 2048)
+    args.encoder_layers = args.get("encoder_layers", 6)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 8)
+    args.encoder_normalize_before = args.get("encoder_normalize_before", False)
+    args.encoder_learned_pos = args.get("encoder_learned_pos", False)
+    args.decoder_embed_path = args.get("decoder_embed_path", None)
+    args.decoder_embed_dim = args.get("decoder_embed_dim", args.encoder_embed_dim)
+    args.decoder_ffn_embed_dim = args.get("decoder_ffn_embed_dim", args.encoder_ffn_embed_dim
     )
-    args.decoder_layers = getattr(args, "decoder_layers", 6)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 8)
-    args.decoder_normalize_before = getattr(args, "decoder_normalize_before", False)
-    args.decoder_learned_pos = getattr(args, "decoder_learned_pos", False)
-    args.attention_dropout = getattr(args, "attention_dropout", 0.0)
-    args.activation_dropout = getattr(args, "activation_dropout", 0.0)
-    args.activation_fn = getattr(args, "activation_fn", "relu")
-    args.dropout = getattr(args, "dropout", 0.1)
-    args.adaptive_softmax_cutoff = getattr(args, "adaptive_softmax_cutoff", None)
-    args.adaptive_softmax_dropout = getattr(args, "adaptive_softmax_dropout", 0)
-    args.share_decoder_input_output_embed = getattr(
-        args, "share_decoder_input_output_embed", False
+    args.decoder_layers = args.get("decoder_layers", 6)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 8)
+    args.decoder_normalize_before = args.get("decoder_normalize_before", False)
+    args.decoder_learned_pos = args.get("decoder_learned_pos", False)
+    args.attention_dropout = args.get("attention_dropout", 0.0)
+    args.activation_dropout = args.get("activation_dropout", 0.0)
+    args.activation_fn = args.get("activation_fn", "relu")
+    args.dropout = args.get("dropout", 0.1)
+    args.adaptive_softmax_cutoff = args.get("adaptive_softmax_cutoff", None)
+    args.adaptive_softmax_dropout = args.get("adaptive_softmax_dropout", 0)
+    args.share_decoder_input_output_embed = args.get("share_decoder_input_output_embed", False
     )
-    args.share_all_embeddings = getattr(args, "share_all_embeddings", False)
-    args.no_token_positional_embeddings = getattr(
-        args, "no_token_positional_embeddings", False
+    args.share_all_embeddings = args.get("share_all_embeddings", False)
+    args.no_token_positional_embeddings = args.get("no_token_positional_embeddings", False
     )
-    args.adaptive_input = getattr(args, "adaptive_input", False)
-    args.apply_bert_init = getattr(args, "apply_bert_init", False)
+    args.adaptive_input = args.get("adaptive_input", False)
+    args.apply_bert_init = args.get("apply_bert_init", False)
 
-    args.decoder_output_dim = getattr(
-        args, "decoder_output_dim", args.decoder_embed_dim
+    args.decoder_output_dim = args.get("decoder_output_dim", args.decoder_embed_dim
     )
-    args.sampling_for_deletion = getattr(args, "sampling_for_deletion", False)
-    args.decoder_input_dim = getattr(args, "decoder_input_dim", args.decoder_embed_dim)
-    args.early_exit = getattr(args, "early_exit", "6,6,6")
-    args.no_share_discriminator = getattr(args, "no_share_discriminator", False)
-    args.no_share_maskpredictor = getattr(args, "no_share_maskpredictor", False)
-    args.share_discriminator_maskpredictor = getattr(
-        args, "share_discriminator_maskpredictor", False
+    args.sampling_for_deletion = args.get("sampling_for_deletion", False)
+    args.decoder_input_dim = args.get("decoder_input_dim", args.decoder_embed_dim)
+    args.early_exit = args.get("early_exit", "6,6,6")
+    args.no_share_discriminator = args.get("no_share_discriminator", False)
+    args.no_share_maskpredictor = args.get("no_share_maskpredictor", False)
+    args.share_discriminator_maskpredictor = args.get("share_discriminator_maskpredictor", False
     )
-    args.no_share_last_layer = getattr(args, "no_share_last_layer", False)
+    args.no_share_last_layer = args.get("no_share_last_layer", False)
 
 
 @register_model_architecture(
@@ -487,14 +481,14 @@ def levenshtein_transformer_wmt_en_de(args):
     "levenshtein_transformer", "levenshtein_transformer_vaswani_wmt_en_de_big"
 )
 def levenshtein_transformer_vaswani_wmt_en_de_big(args):
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 1024)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 4096)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 16)
-    args.encoder_normalize_before = getattr(args, "encoder_normalize_before", False)
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 1024)
-    args.decoder_ffn_embed_dim = getattr(args, "decoder_ffn_embed_dim", 4096)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 16)
-    args.dropout = getattr(args, "dropout", 0.3)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 1024)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 4096)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 16)
+    args.encoder_normalize_before = args.get("encoder_normalize_before", False)
+    args.decoder_embed_dim = args.get("decoder_embed_dim", 1024)
+    args.decoder_ffn_embed_dim = args.get("decoder_ffn_embed_dim", 4096)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 16)
+    args.dropout = args.get("dropout", 0.3)
     levenshtein_base_architecture(args)
 
 
@@ -503,8 +497,8 @@ def levenshtein_transformer_vaswani_wmt_en_de_big(args):
     "levenshtein_transformer", "levenshtein_transformer_wmt_en_de_big"
 )
 def levenshtein_transformer_wmt_en_de_big_t2t(args):
-    args.encoder_normalize_before = getattr(args, "encoder_normalize_before", True)
-    args.decoder_normalize_before = getattr(args, "decoder_normalize_before", True)
-    args.attention_dropout = getattr(args, "attention_dropout", 0.1)
-    args.activation_dropout = getattr(args, "activation_dropout", 0.1)
+    args.encoder_normalize_before = args.get("encoder_normalize_before", True)
+    args.decoder_normalize_before = args.get("decoder_normalize_before", True)
+    args.attention_dropout = args.get("attention_dropout", 0.1)
+    args.activation_dropout = args.get("activation_dropout", 0.1)
     levenshtein_transformer_vaswani_wmt_en_de_big(args)

@@ -906,48 +906,42 @@ def Linear(in_features, out_features, bias=True):
 
 @register_model_architecture("lightconv", "lightconv")
 def base_architecture(args):
-    args.encoder_embed_path = getattr(args, "encoder_embed_path", None)
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 512)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 2048)
-    args.encoder_layers = getattr(args, "encoder_layers", 7)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 8)
-    args.encoder_normalize_before = getattr(args, "encoder_normalize_before", False)
-    args.encoder_learned_pos = getattr(args, "encoder_learned_pos", False)
-    args.decoder_embed_path = getattr(args, "decoder_embed_path", None)
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", args.encoder_embed_dim)
-    args.decoder_ffn_embed_dim = getattr(
-        args, "decoder_ffn_embed_dim", args.encoder_ffn_embed_dim
+    args.encoder_embed_path = args.get("encoder_embed_path", None)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 512)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 2048)
+    args.encoder_layers = args.get("encoder_layers", 7)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 8)
+    args.encoder_normalize_before = args.get("encoder_normalize_before", False)
+    args.encoder_learned_pos = args.get("encoder_learned_pos", False)
+    args.decoder_embed_path = args.get("decoder_embed_path", None)
+    args.decoder_embed_dim = args.get("decoder_embed_dim", args.encoder_embed_dim)
+    args.decoder_ffn_embed_dim = args.get("decoder_ffn_embed_dim", args.encoder_ffn_embed_dim
     )
-    args.decoder_layers = getattr(args, "decoder_layers", 6)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 8)
-    args.decoder_normalize_before = getattr(args, "decoder_normalize_before", False)
-    args.decoder_learned_pos = getattr(args, "decoder_learned_pos", False)
-    args.attention_dropout = getattr(args, "attention_dropout", 0.0)
-    args.relu_dropout = getattr(args, "relu_dropout", 0.0)
-    args.dropout = getattr(args, "dropout", 0.1)
-    args.adaptive_softmax_cutoff = getattr(args, "adaptive_softmax_cutoff", None)
-    args.adaptive_softmax_dropout = getattr(args, "adaptive_softmax_dropout", 0)
-    args.share_decoder_input_output_embed = getattr(
-        args, "share_decoder_input_output_embed", False
+    args.decoder_layers = args.get("decoder_layers", 6)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 8)
+    args.decoder_normalize_before = args.get("decoder_normalize_before", False)
+    args.decoder_learned_pos = args.get("decoder_learned_pos", False)
+    args.attention_dropout = args.get("attention_dropout", 0.0)
+    args.relu_dropout = args.get("relu_dropout", 0.0)
+    args.dropout = args.get("dropout", 0.1)
+    args.adaptive_softmax_cutoff = args.get("adaptive_softmax_cutoff", None)
+    args.adaptive_softmax_dropout = args.get("adaptive_softmax_dropout", 0)
+    args.share_decoder_input_output_embed = args.get("share_decoder_input_output_embed", False
     )
-    args.share_all_embeddings = getattr(args, "share_all_embeddings", False)
-    args.no_token_positional_embeddings = getattr(
-        args, "no_token_positional_embeddings", False
+    args.share_all_embeddings = args.get("share_all_embeddings", False)
+    args.no_token_positional_embeddings = args.get("no_token_positional_embeddings", False
     )
 
-    args.decoder_output_dim = getattr(
-        args, "decoder_output_dim", args.decoder_embed_dim
+    args.decoder_output_dim = args.get("decoder_output_dim", args.decoder_embed_dim
     )
-    args.decoder_input_dim = getattr(args, "decoder_input_dim", args.decoder_embed_dim)
+    args.decoder_input_dim = args.get("decoder_input_dim", args.decoder_embed_dim)
 
-    args.encoder_conv_dim = getattr(args, "encoder_conv_dim", args.encoder_embed_dim)
-    args.decoder_conv_dim = getattr(args, "decoder_conv_dim", args.decoder_embed_dim)
+    args.encoder_conv_dim = args.get("encoder_conv_dim", args.encoder_embed_dim)
+    args.decoder_conv_dim = args.get("decoder_conv_dim", args.decoder_embed_dim)
 
-    args.encoder_kernel_size_list = getattr(
-        args, "encoder_kernel_size_list", [3, 7, 15, 31, 31, 31, 31]
+    args.encoder_kernel_size_list = args.get("encoder_kernel_size_list", [3, 7, 15, 31, 31, 31, 31]
     )
-    args.decoder_kernel_size_list = getattr(
-        args, "decoder_kernel_size_list", [3, 7, 15, 31, 31, 31]
+    args.decoder_kernel_size_list = args.get("decoder_kernel_size_list", [3, 7, 15, 31, 31, 31]
     )
     if len(args.encoder_kernel_size_list) == 1:
         args.encoder_kernel_size_list = (
@@ -963,27 +957,27 @@ def base_architecture(args):
     assert (
         len(args.decoder_kernel_size_list) == args.decoder_layers
     ), "decoder_kernel_size_list doesn't match decoder_layers"
-    args.encoder_glu = getattr(args, "encoder_glu", True)
-    args.decoder_glu = getattr(args, "decoder_glu", True)
-    args.input_dropout = getattr(args, "input_dropout", 0.1)
-    args.weight_dropout = getattr(args, "weight_dropout", args.attention_dropout)
+    args.encoder_glu = args.get("encoder_glu", True)
+    args.decoder_glu = args.get("decoder_glu", True)
+    args.input_dropout = args.get("input_dropout", 0.1)
+    args.weight_dropout = args.get("weight_dropout", args.attention_dropout)
 
 
 @register_model_architecture("lightconv", "lightconv_iwslt_de_en")
 def lightconv_iwslt_de_en(args):
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 512)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 1024)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 4)
-    args.encoder_layers = getattr(args, "encoder_layers", 7)
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 512)
-    args.decoder_ffn_embed_dim = getattr(args, "decoder_ffn_embed_dim", 1024)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 4)
-    args.decoder_layers = getattr(args, "decoder_layers", 6)
-    args.attention_dropout = getattr(args, "attention_dropout", 0.1)
-    args.weight_dropout = getattr(args, "weight_dropout", 0.1)
-    args.encoder_glu = getattr(args, "encoder_glu", False)
-    args.decoder_glu = getattr(args, "decoder_glu", False)
-    args.input_dropout = getattr(args, "input_dropout", 0.0)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 512)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 1024)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 4)
+    args.encoder_layers = args.get("encoder_layers", 7)
+    args.decoder_embed_dim = args.get("decoder_embed_dim", 512)
+    args.decoder_ffn_embed_dim = args.get("decoder_ffn_embed_dim", 1024)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 4)
+    args.decoder_layers = args.get("decoder_layers", 6)
+    args.attention_dropout = args.get("attention_dropout", 0.1)
+    args.weight_dropout = args.get("weight_dropout", 0.1)
+    args.encoder_glu = args.get("encoder_glu", False)
+    args.decoder_glu = args.get("decoder_glu", False)
+    args.input_dropout = args.get("input_dropout", 0.0)
     base_architecture(args)
 
 
@@ -994,27 +988,27 @@ def lightconv_wmt_en_de(args):
 
 @register_model_architecture("lightconv", "lightconv_wmt_en_de_big")
 def lightconv_wmt_en_de_big(args):
-    args.attention_dropout = getattr(args, "attention_dropout", 0.1)
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 1024)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 4096)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 16)
-    args.encoder_normalize_before = getattr(args, "encoder_normalize_before", False)
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 1024)
-    args.decoder_ffn_embed_dim = getattr(args, "decoder_ffn_embed_dim", 4096)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 16)
-    args.dropout = getattr(args, "dropout", 0.3)
+    args.attention_dropout = args.get("attention_dropout", 0.1)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 1024)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 4096)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 16)
+    args.encoder_normalize_before = args.get("encoder_normalize_before", False)
+    args.decoder_embed_dim = args.get("decoder_embed_dim", 1024)
+    args.decoder_ffn_embed_dim = args.get("decoder_ffn_embed_dim", 4096)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 16)
+    args.dropout = args.get("dropout", 0.3)
     base_architecture(args)
 
 
 @register_model_architecture("lightconv", "lightconv_wmt_en_fr_big")
 def lightconv_wmt_en_fr_big(args):
-    args.dropout = getattr(args, "dropout", 0.1)
+    args.dropout = args.get("dropout", 0.1)
     lightconv_wmt_en_de_big(args)
 
 
 @register_model_architecture("lightconv", "lightconv_wmt_zh_en_big")
 def lightconv_wmt_zh_en_big(args):
-    args.dropout = getattr(args, "dropout", 0.2)
-    args.attention_dropout = getattr(args, "attention_dropout", 0.2)
-    args.weight_dropout = getattr(args, "weight_dropout", 0.2)
+    args.dropout = args.get("dropout", 0.2)
+    args.attention_dropout = args.get("attention_dropout", 0.2)
+    args.weight_dropout = args.get("weight_dropout", 0.2)
     lightconv_wmt_en_de_big(args)

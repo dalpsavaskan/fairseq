@@ -130,7 +130,7 @@ class InsertionTransformerModel(LevenshteinTransformerModel):
     @classmethod
     def build_decoder(cls, args, tgt_dict, embed_tokens):
         decoder = InsertionTransformerDecoder(args, tgt_dict, embed_tokens)
-        if getattr(args, "apply_bert_init", False):
+        if args.get("apply_bert_init", False):
             decoder.apply(init_bert_params)
         return decoder
 
@@ -219,7 +219,7 @@ class InsertionTransformerDecoder(LevenshteinTransformerDecoder):
         self.eos = dictionary.eos()
         self.pool_out = Linear(self.output_embed_dim * 2, self.output_embed_dim)
 
-        self.label_tau = getattr(args, "label_tau", None)
+        self.label_tau = args.get("label_tau", None)
 
     @ensemble_decoder
     def forward_word_ins(self, normalize, encoder_out, prev_output_tokens):
@@ -239,42 +239,38 @@ class InsertionTransformerDecoder(LevenshteinTransformerDecoder):
 
 @register_model_architecture("insertion_transformer", "insertion_transformer")
 def insertion_base_architecture(args):
-    args.encoder_embed_path = getattr(args, "encoder_embed_path", None)
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 512)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 2048)
-    args.encoder_layers = getattr(args, "encoder_layers", 6)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 8)
-    args.encoder_normalize_before = getattr(args, "encoder_normalize_before", False)
-    args.encoder_learned_pos = getattr(args, "encoder_learned_pos", False)
-    args.decoder_embed_path = getattr(args, "decoder_embed_path", None)
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", args.encoder_embed_dim)
-    args.decoder_ffn_embed_dim = getattr(
-        args, "decoder_ffn_embed_dim", args.encoder_ffn_embed_dim
+    args.encoder_embed_path = args.get("encoder_embed_path", None)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 512)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 2048)
+    args.encoder_layers = args.get("encoder_layers", 6)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 8)
+    args.encoder_normalize_before = args.get("encoder_normalize_before", False)
+    args.encoder_learned_pos = args.get("encoder_learned_pos", False)
+    args.decoder_embed_path = args.get("decoder_embed_path", None)
+    args.decoder_embed_dim = args.get("decoder_embed_dim", args.encoder_embed_dim)
+    args.decoder_ffn_embed_dim = args.get("decoder_ffn_embed_dim", args.encoder_ffn_embed_dim
     )
-    args.decoder_layers = getattr(args, "decoder_layers", 6)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 8)
-    args.decoder_normalize_before = getattr(args, "decoder_normalize_before", False)
-    args.decoder_learned_pos = getattr(args, "decoder_learned_pos", False)
-    args.attention_dropout = getattr(args, "attention_dropout", 0.0)
-    args.activation_dropout = getattr(args, "activation_dropout", 0.0)
-    args.activation_fn = getattr(args, "activation_fn", "relu")
-    args.dropout = getattr(args, "dropout", 0.1)
-    args.adaptive_softmax_cutoff = getattr(args, "adaptive_softmax_cutoff", None)
-    args.adaptive_softmax_dropout = getattr(args, "adaptive_softmax_dropout", 0)
-    args.share_decoder_input_output_embed = getattr(
-        args, "share_decoder_input_output_embed", False
+    args.decoder_layers = args.get("decoder_layers", 6)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 8)
+    args.decoder_normalize_before = args.get("decoder_normalize_before", False)
+    args.decoder_learned_pos = args.get("decoder_learned_pos", False)
+    args.attention_dropout = args.get("attention_dropout", 0.0)
+    args.activation_dropout = args.get("activation_dropout", 0.0)
+    args.activation_fn = args.get("activation_fn", "relu")
+    args.dropout = args.get("dropout", 0.1)
+    args.adaptive_softmax_cutoff = args.get("adaptive_softmax_cutoff", None)
+    args.adaptive_softmax_dropout = args.get("adaptive_softmax_dropout", 0)
+    args.share_decoder_input_output_embed = args.get("share_decoder_input_output_embed", False
     )
-    args.share_all_embeddings = getattr(args, "share_all_embeddings", False)
-    args.no_token_positional_embeddings = getattr(
-        args, "no_token_positional_embeddings", False
+    args.share_all_embeddings = args.get("share_all_embeddings", False)
+    args.no_token_positional_embeddings = args.get("no_token_positional_embeddings", False
     )
-    args.adaptive_input = getattr(args, "adaptive_input", False)
-    args.apply_bert_init = getattr(args, "apply_bert_init", False)
+    args.adaptive_input = args.get("adaptive_input", False)
+    args.apply_bert_init = args.get("apply_bert_init", False)
 
-    args.decoder_output_dim = getattr(
-        args, "decoder_output_dim", args.decoder_embed_dim
+    args.decoder_output_dim = args.get("decoder_output_dim", args.decoder_embed_dim
     )
-    args.decoder_input_dim = getattr(args, "decoder_input_dim", args.decoder_embed_dim)
+    args.decoder_input_dim = args.get("decoder_input_dim", args.decoder_embed_dim)
 
     # special for insertion transformer
-    args.label_tau = getattr(args, "label_tau", None)
+    args.label_tau = args.get("label_tau", None)

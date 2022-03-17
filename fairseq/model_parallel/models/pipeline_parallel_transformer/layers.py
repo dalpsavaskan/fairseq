@@ -54,7 +54,7 @@ class TransformerEncoderEmbedding(nn.Module):
             if not args.no_token_positional_embeddings
             else None
         )
-        if getattr(args, "layernorm_embedding", False):
+        if args.get("layernorm_embedding", False):
             self.layernorm_embedding = LayerNorm(embed_dim)
         else:
             self.layernorm_embedding = None
@@ -245,8 +245,7 @@ class TransformerDecoderOutputLayer(nn.Module):
                 self.embed_tokens, mean=0, std=self.output_embed_dim**-0.5
             )
 
-        if args.decoder_normalize_before and not getattr(
-            args, "no_decoder_final_norm", False
+        if args.decoder_normalize_before and not args.get("no_decoder_final_norm", False
         ):
             self.layer_norm = LayerNorm(embed_dim)
         else:
@@ -320,12 +319,12 @@ class TransformerEncoderLayer(nn.Module):
         self.self_attn_layer_norm = LayerNorm(self.embed_dim)
         self.dropout = args.dropout
         self.activation_fn = utils.get_activation_fn(
-            activation=getattr(args, "activation_fn", "relu")
+            activation=args.get("activation_fn", "relu")
         )
-        self.activation_dropout = getattr(args, "activation_dropout", 0)
+        self.activation_dropout = args.get("activation_dropout", 0)
         if self.activation_dropout == 0:
             # for backwards compatibility with models that use args.relu_dropout
-            self.activation_dropout = getattr(args, "relu_dropout", 0)
+            self.activation_dropout = args.get("relu_dropout", 0)
         self.normalize_before = args.encoder_normalize_before
         self.fc1 = Linear(self.embed_dim, args.encoder_ffn_embed_dim)
         self.fc2 = Linear(args.encoder_ffn_embed_dim, self.embed_dim)
@@ -423,18 +422,18 @@ class TransformerDecoderLayer(nn.Module):
         )
         self.dropout = args.dropout
         self.activation_fn = utils.get_activation_fn(
-            activation=getattr(args, "activation_fn", "relu")
+            activation=args.get("activation_fn", "relu")
         )
-        self.activation_dropout = getattr(args, "activation_dropout", 0)
+        self.activation_dropout = args.get("activation_dropout", 0)
         if self.activation_dropout == 0:
             # for backwards compatibility with models that use args.relu_dropout
-            self.activation_dropout = getattr(args, "relu_dropout", 0)
+            self.activation_dropout = args.get("relu_dropout", 0)
         self.normalize_before = args.decoder_normalize_before
 
         # use layerNorm rather than FusedLayerNorm for exporting.
         # char_inputs can be used to determint this.
         # TODO  remove this once we update apex with the fix
-        export = getattr(args, "char_inputs", False)
+        export = args.get("char_inputs", False)
         self.self_attn_layer_norm = LayerNorm(self.embed_dim, export=export)
 
         if no_encoder_attn:
@@ -444,8 +443,8 @@ class TransformerDecoderLayer(nn.Module):
             self.encoder_attn = MultiheadAttention(
                 self.embed_dim,
                 args.decoder_attention_heads,
-                kdim=getattr(args, "encoder_embed_dim", None),
-                vdim=getattr(args, "encoder_embed_dim", None),
+                kdim=args.get("encoder_embed_dim", None),
+                vdim=args.get("encoder_embed_dim", None),
                 dropout=args.attention_dropout,
                 encoder_decoder_attention=True,
             )

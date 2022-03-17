@@ -26,8 +26,8 @@ class LatentTransformerEncoder(TransformerEncoder):
         self.layer_select = LayerSelect(
             num_layers=self.num_layers,
             num_logits=self.num_logits,
-            soft_select=getattr(args, "soft_select", False),
-            sampling_tau=getattr(args, "sampling_tau", 5.),
+            soft_select=args.get("soft_select", False),
+            sampling_tau=args.get("sampling_tau", 5.),
         )
         self.lang_idx = None
         self.layers = nn.ModuleList(
@@ -82,8 +82,8 @@ class LatentTransformerDecoder(TransformerDecoder):
         self.layer_select = LayerSelect(
             num_layers=self.num_layers,
             num_logits=self.num_logits,
-            soft_select=getattr(args, "soft_select", False),
-            sampling_tau=getattr(args, "sampling_tau", 5.),
+            soft_select=args.get("soft_select", False),
+            sampling_tau=args.get("sampling_tau", 5.),
         )
         self.lang_idx = None
         self.layers = nn.ModuleList(

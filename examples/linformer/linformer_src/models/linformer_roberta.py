@@ -102,10 +102,10 @@ class LinformerEncoder(RobertaEncoder):
 
 @register_model_architecture("linformer_roberta", "linformer_roberta")
 def base_architecture(args):
-    args.compressed = getattr(args, "compressed", 4)
-    args.shared_kv_compressed = getattr(args, "shared_kv_compressed", 0)
-    args.shared_layer_kv_compressed = getattr(args, "shared_layer_kv_compressed", 0)
-    args.freeze_compress = getattr(args, "freeze_compress", 0)
+    args.compressed = args.get("compressed", 4)
+    args.shared_kv_compressed = args.get("shared_kv_compressed", 0)
+    args.shared_layer_kv_compressed = args.get("shared_layer_kv_compressed", 0)
+    args.freeze_compress = args.get("freeze_compress", 0)
     roberta_base_architecture(args)
 
 

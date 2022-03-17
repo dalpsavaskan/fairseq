@@ -80,14 +80,14 @@ class TransformerAlignModel(TransformerModel):
 
 @register_model_architecture("transformer_align", "transformer_align")
 def transformer_align(args):
-    args.alignment_heads = getattr(args, "alignment_heads", 1)
-    args.alignment_layer = getattr(args, "alignment_layer", 4)
-    args.full_context_alignment = getattr(args, "full_context_alignment", False)
+    args.alignment_heads = args.get("alignment_heads", 1)
+    args.alignment_layer = args.get("alignment_layer", 4)
+    args.full_context_alignment = args.get("full_context_alignment", False)
     base_architecture(args)
 
 
 @register_model_architecture("transformer_align", "transformer_wmt_en_de_big_align")
 def transformer_wmt_en_de_big_align(args):
-    args.alignment_heads = getattr(args, "alignment_heads", 1)
-    args.alignment_layer = getattr(args, "alignment_layer", 4)
+    args.alignment_heads = args.get("alignment_heads", 1)
+    args.alignment_layer = args.get("alignment_layer", 4)
     transformer_wmt_en_de_big(args)

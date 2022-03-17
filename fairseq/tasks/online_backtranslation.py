@@ -373,8 +373,8 @@ class OnlineBackTranslationTask(TranslationTask):
                 max_len=model.max_decoder_positions() - 1,
             )
 
-        if getattr(args, "eval_bleu", False):
-            assert getattr(args, "eval_bleu_detok", None) is not None, (
+        if args.get("eval_bleu", False):
+            assert args.get("eval_bleu_detok", None) is not None, (
                 "--eval-bleu-detok is required if using --eval-bleu; "
                 "try --eval-bleu-detok=moses (or --eval-bleu-detok=space "
                 "to disable detokenization, e.g., when using sentencepiece)"
@@ -382,7 +382,7 @@ class OnlineBackTranslationTask(TranslationTask):
             detok_args = json.loads(getattr(args, "eval_bleu_detok_args", "{}") or "{}")
             self.tokenizer = encoders.build_tokenizer(
                 Namespace(
-                    tokenizer=getattr(args, "eval_bleu_detok", None), **detok_args
+                    tokenizer=args.get("eval_bleu_detok", None), **detok_args
                 )
             )
 

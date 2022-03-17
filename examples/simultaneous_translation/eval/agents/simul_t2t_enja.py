@@ -27,7 +27,7 @@ class SimulTransTextAgentJA(TextAgent):
     def __init__(self, args):
 
         # Whether use gpu
-        self.gpu = getattr(args, "gpu", False)
+        self.gpu = args.get("gpu", False)
 
         # Max len
         self.max_len = args.max_len
@@ -103,8 +103,8 @@ class SimulTransTextAgentJA(TextAgent):
     def build_word_splitter(self, args):
         self.spm = {}
         for lang in ['src', 'tgt']:
-            if getattr(args, f'{lang}_splitter_type', None):
-                path = getattr(args, f'{lang}_splitter_path', None)
+            if args.get(f'{lang}_splitter_type', None):
+                path = args.get(f'{lang}_splitter_path', None)
                 if path:
                     self.spm[lang] = spm.SentencePieceProcessor()
                     self.spm[lang].Load(path)

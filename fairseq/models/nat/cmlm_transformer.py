@@ -112,49 +112,45 @@ class CMLMNATransformerModel(NATransformerModel):
 
 @register_model_architecture("cmlm_transformer", "cmlm_transformer")
 def cmlm_base_architecture(args):
-    args.encoder_embed_path = getattr(args, "encoder_embed_path", None)
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 512)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 2048)
-    args.encoder_layers = getattr(args, "encoder_layers", 6)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 8)
-    args.encoder_normalize_before = getattr(args, "encoder_normalize_before", False)
-    args.encoder_learned_pos = getattr(args, "encoder_learned_pos", False)
-    args.decoder_embed_path = getattr(args, "decoder_embed_path", None)
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", args.encoder_embed_dim)
-    args.decoder_ffn_embed_dim = getattr(
-        args, "decoder_ffn_embed_dim", args.encoder_ffn_embed_dim
+    args.encoder_embed_path = args.get("encoder_embed_path", None)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 512)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 2048)
+    args.encoder_layers = args.get("encoder_layers", 6)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 8)
+    args.encoder_normalize_before = args.get("encoder_normalize_before", False)
+    args.encoder_learned_pos = args.get("encoder_learned_pos", False)
+    args.decoder_embed_path = args.get("decoder_embed_path", None)
+    args.decoder_embed_dim = args.get("decoder_embed_dim", args.encoder_embed_dim)
+    args.decoder_ffn_embed_dim = args.get("decoder_ffn_embed_dim", args.encoder_ffn_embed_dim
     )
-    args.decoder_layers = getattr(args, "decoder_layers", 6)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 8)
-    args.decoder_normalize_before = getattr(args, "decoder_normalize_before", False)
-    args.decoder_learned_pos = getattr(args, "decoder_learned_pos", False)
-    args.attention_dropout = getattr(args, "attention_dropout", 0.0)
-    args.activation_dropout = getattr(args, "activation_dropout", 0.0)
-    args.activation_fn = getattr(args, "activation_fn", "relu")
-    args.dropout = getattr(args, "dropout", 0.1)
-    args.adaptive_softmax_cutoff = getattr(args, "adaptive_softmax_cutoff", None)
-    args.adaptive_softmax_dropout = getattr(args, "adaptive_softmax_dropout", 0)
-    args.share_decoder_input_output_embed = getattr(
-        args, "share_decoder_input_output_embed", False
+    args.decoder_layers = args.get("decoder_layers", 6)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 8)
+    args.decoder_normalize_before = args.get("decoder_normalize_before", False)
+    args.decoder_learned_pos = args.get("decoder_learned_pos", False)
+    args.attention_dropout = args.get("attention_dropout", 0.0)
+    args.activation_dropout = args.get("activation_dropout", 0.0)
+    args.activation_fn = args.get("activation_fn", "relu")
+    args.dropout = args.get("dropout", 0.1)
+    args.adaptive_softmax_cutoff = args.get("adaptive_softmax_cutoff", None)
+    args.adaptive_softmax_dropout = args.get("adaptive_softmax_dropout", 0)
+    args.share_decoder_input_output_embed = args.get("share_decoder_input_output_embed", False
     )
-    args.share_all_embeddings = getattr(args, "share_all_embeddings", True)
-    args.no_token_positional_embeddings = getattr(
-        args, "no_token_positional_embeddings", False
+    args.share_all_embeddings = args.get("share_all_embeddings", True)
+    args.no_token_positional_embeddings = args.get("no_token_positional_embeddings", False
     )
-    args.adaptive_input = getattr(args, "adaptive_input", False)
-    args.apply_bert_init = getattr(args, "apply_bert_init", False)
+    args.adaptive_input = args.get("adaptive_input", False)
+    args.apply_bert_init = args.get("apply_bert_init", False)
 
-    args.decoder_output_dim = getattr(
-        args, "decoder_output_dim", args.decoder_embed_dim
+    args.decoder_output_dim = args.get("decoder_output_dim", args.decoder_embed_dim
     )
-    args.decoder_input_dim = getattr(args, "decoder_input_dim", args.decoder_embed_dim)
+    args.decoder_input_dim = args.get("decoder_input_dim", args.decoder_embed_dim)
 
     # --- special arguments ---
-    args.sg_length_pred = getattr(args, "sg_length_pred", False)
-    args.pred_length_offset = getattr(args, "pred_length_offset", False)
-    args.length_loss_factor = getattr(args, "length_loss_factor", 0.1)
-    args.ngram_predictor = getattr(args, "ngram_predictor", 1)
-    args.src_embedding_copy = getattr(args, "src_embedding_copy", False)
+    args.sg_length_pred = args.get("sg_length_pred", False)
+    args.pred_length_offset = args.get("pred_length_offset", False)
+    args.length_loss_factor = args.get("length_loss_factor", 0.1)
+    args.ngram_predictor = args.get("ngram_predictor", 1)
+    args.src_embedding_copy = args.get("src_embedding_copy", False)
 
 
 @register_model_architecture("cmlm_transformer", "cmlm_transformer_wmt_en_de")

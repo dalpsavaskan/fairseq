@@ -119,7 +119,7 @@ class Processing(BenchmarkingBase):
 
     def __init__(self, args):
         super().__init__()
-        self.use_cuda = not getattr(args, "cpu", False)
+        self.use_cuda = not args.get("cpu", False)
         self.setUp(args)
         self.training = False
         self.s2x_task = self.task
@@ -251,7 +251,7 @@ class SpeechGeneration(BenchmarkingBase):
 
     def __init__(self, args):
         super().__init__()
-        self.use_cuda = not getattr(args, "cpu", False)
+        self.use_cuda = not args.get("cpu", False)
         self.setUp(args)
         self.s2x_task = self.task
 

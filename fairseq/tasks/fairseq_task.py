@@ -383,12 +383,12 @@ class FairseqTask(object):
                 (https://arxiv.org/abs/2010.00904) and
                 https://github.com/facebookresearch/GENRE.
         """
-        if getattr(args, "score_reference", False):
+        if args.get("score_reference", False):
             from fairseq.sequence_scorer import SequenceScorer
 
             return SequenceScorer(
                 self.target_dictionary,
-                compute_alignment=getattr(args, "print_alignment", False),
+                compute_alignment=args.get("print_alignment", False),
             )
 
         from fairseq.sequence_generator import (
@@ -397,16 +397,16 @@ class FairseqTask(object):
         )
 
         # Choose search strategy. Defaults to Beam Search.
-        sampling = getattr(args, "sampling", False)
-        sampling_topk = getattr(args, "sampling_topk", -1)
-        sampling_topp = getattr(args, "sampling_topp", -1.0)
-        diverse_beam_groups = getattr(args, "diverse_beam_groups", -1)
-        diverse_beam_strength = getattr(args, "diverse_beam_strength", 0.5)
-        match_source_len = getattr(args, "match_source_len", False)
-        diversity_rate = getattr(args, "diversity_rate", -1)
-        constrained = getattr(args, "constraints", False)
+        sampling = args.get("sampling", False)
+        sampling_topk = args.get("sampling_topk", -1)
+        sampling_topp = args.get("sampling_topp", -1.0)
+        diverse_beam_groups = args.get("diverse_beam_groups", -1)
+        diverse_beam_strength = args.get("diverse_beam_strength", 0.5)
+        match_source_len = args.get("match_source_len", False)
+        diversity_rate = args.get("diversity_rate", -1)
+        constrained = args.get("constraints", False)
         if prefix_allowed_tokens_fn is None:
-            prefix_allowed_tokens_fn = getattr(args, "prefix_allowed_tokens_fn", None)
+            prefix_allowed_tokens_fn = args.get("prefix_allowed_tokens_fn", None)
         if (
             sum(
                 int(cond)
@@ -459,7 +459,7 @@ class FairseqTask(object):
 
         extra_gen_cls_kwargs = extra_gen_cls_kwargs or {}
         if seq_gen_cls is None:
-            if getattr(args, "print_alignment", False):
+            if args.get("print_alignment", False):
                 seq_gen_cls = SequenceGeneratorWithAlignment
                 extra_gen_cls_kwargs["print_alignment"] = args.print_alignment
             else:
@@ -468,16 +468,16 @@ class FairseqTask(object):
         return seq_gen_cls(
             models,
             self.target_dictionary,
-            beam_size=getattr(args, "beam", 5),
-            max_len_a=getattr(args, "max_len_a", 0),
-            max_len_b=getattr(args, "max_len_b", 200),
-            min_len=getattr(args, "min_len", 1),
-            normalize_scores=(not getattr(args, "unnormalized", False)),
-            len_penalty=getattr(args, "lenpen", 1),
-            unk_penalty=getattr(args, "unkpen", 0),
-            temperature=getattr(args, "temperature", 1.0),
-            match_source_len=getattr(args, "match_source_len", False),
-            no_repeat_ngram_size=getattr(args, "no_repeat_ngram_size", 0),
+            beam_size=args.get("beam", 5),
+            max_len_a=args.get("max_len_a", 0),
+            max_len_b=args.get("max_len_b", 200),
+            min_len=args.get("min_len", 1),
+            normalize_scores=(not args.get("unnormalized", False)),
+            len_penalty=args.get("lenpen", 1),
+            unk_penalty=args.get("unkpen", 0),
+            temperature=args.get("temperature", 1.0),
+            match_source_len=args.get("match_source_len", False),
+            no_repeat_ngram_size=args.get("no_repeat_ngram_size", 0),
             search_strategy=search_strategy,
             **extra_gen_cls_kwargs,
         )

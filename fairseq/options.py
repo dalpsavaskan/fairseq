@@ -156,7 +156,7 @@ def parse_args_and_arch(
         from fairseq.tasks import TASK_REGISTRY
 
         TASK_REGISTRY[args.task].add_args(parser)
-    if getattr(args, "use_bmuf", False):
+    if args.get("use_bmuf", False):
         # hack to support extra args for block distributed data parallelism
         from fairseq.optim.bmuf import FairseqBMUF
 
@@ -166,7 +166,7 @@ def parse_args_and_arch(
     from fairseq.registry import REGISTRIES
 
     for registry_name, REGISTRY in REGISTRIES.items():
-        choice = getattr(args, registry_name, None)
+        choice = args.get(registry_name, None)
         if choice is not None:
             cls = REGISTRY["registry"][choice]
             if hasattr(cls, "add_args"):
@@ -191,24 +191,24 @@ def parse_args_and_arch(
         args.batch_size_valid = args.batch_size
     if hasattr(args, "max_tokens_valid") and args.max_tokens_valid is None:
         args.max_tokens_valid = args.max_tokens
-    if getattr(args, "memory_efficient_fp16", False):
+    if args.get("memory_efficient_fp16", False):
         args.fp16 = True
-    if getattr(args, "memory_efficient_bf16", False):
+    if args.get("memory_efficient_bf16", False):
         args.bf16 = True
-    args.tpu = getattr(args, "tpu", False)
-    args.bf16 = getattr(args, "bf16", False)
+    args.tpu = args.get("tpu", False)
+    args.bf16 = args.get("bf16", False)
     if args.bf16:
         args.tpu = True
     if args.tpu and args.fp16:
         raise ValueError("Cannot combine --fp16 and --tpu, use --bf16 on TPUs")
 
-    if getattr(args, "seed", None) is None:
+    if args.get("seed", None) is None:
         args.seed = 1  # default seed for training
         args.no_seed_provided = True
     else:
         args.no_seed_provided = False
 
-    if getattr(args, "update_epoch_batch_itr", None) is None:
+    if args.get("update_epoch_batch_itr", None) is None:
         if hasattr(args, "grouped_shuffling"):
             args.update_epoch_batch_itr = args.grouped_shuffling
         else:

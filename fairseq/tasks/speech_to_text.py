@@ -72,7 +72,7 @@ class SpeechToTextTask(LegacyFairseqTask):
             f"dictionary size ({data_cfg.vocab_filename}): " f"{len(tgt_dict):,}"
         )
 
-        if getattr(args, "train_subset", None) is not None:
+        if args.get("train_subset", None) is not None:
             if not all(s.startswith("train") for s in args.train_subset.split(",")):
                 raise ValueError('Train splits should be named like "train*".')
         return cls(args, tgt_dict)

@@ -100,9 +100,9 @@ class TransformerModel(TransformerModelBase):
         if args.decoder_layers_to_keep:
             args.decoder_layers = len(args.decoder_layers_to_keep.split(","))
 
-        if getattr(args, "max_source_positions", None) is None:
+        if args.get("max_source_positions", None) is None:
             args.max_source_positions = DEFAULT_MAX_SOURCE_POSITIONS
-        if getattr(args, "max_target_positions", None) is None:
+        if args.get("max_target_positions", None) is None:
             args.max_target_positions = DEFAULT_MAX_TARGET_POSITIONS
 
         src_dict, tgt_dict = task.source_dictionary, task.target_dictionary
@@ -122,12 +122,11 @@ class TransformerModel(TransformerModelBase):
                 )
             args.share_decoder_input_output_embed = True
 
-        if getattr(args, "offload_activations", False):
+        if args.get("offload_activations", False):
             args.checkpoint_activations = True  # offloading implies checkpointing
 
         if not args.share_all_embeddings:
-            args.min_params_to_wrap = getattr(
-                args, "min_params_to_wrap", DEFAULT_MIN_PARAMS_TO_WRAP
+            args.min_params_to_wrap = args.get("min_params_to_wrap", DEFAULT_MIN_PARAMS_TO_WRAP
             )
         cfg = TransformerConfig.from_namespace(args)
         return super().build_model(cfg, task)
@@ -156,81 +155,77 @@ class TransformerModel(TransformerModelBase):
 
 @register_model_architecture("transformer", "transformer_tiny")
 def tiny_architecture(args):
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 64)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 64)
-    args.encoder_layers = getattr(args, "encoder_layers", 2)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 2)
-    args.decoder_layers = getattr(args, "decoder_layers", 2)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 2)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 64)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 64)
+    args.encoder_layers = args.get("encoder_layers", 2)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 2)
+    args.decoder_layers = args.get("decoder_layers", 2)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 2)
     return base_architecture(args)
 
 
 @register_model_architecture("transformer", "transformer")
 def base_architecture(args):
-    args.encoder_embed_path = getattr(args, "encoder_embed_path", None)
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 512)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 2048)
-    args.encoder_layers = getattr(args, "encoder_layers", 6)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 8)
-    args.encoder_normalize_before = getattr(args, "encoder_normalize_before", False)
-    args.encoder_learned_pos = getattr(args, "encoder_learned_pos", False)
-    args.decoder_embed_path = getattr(args, "decoder_embed_path", None)
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", args.encoder_embed_dim)
-    args.decoder_ffn_embed_dim = getattr(
-        args, "decoder_ffn_embed_dim", args.encoder_ffn_embed_dim
+    args.encoder_embed_path = args.get("encoder_embed_path", None)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 512)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 2048)
+    args.encoder_layers = args.get("encoder_layers", 6)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 8)
+    args.encoder_normalize_before = args.get("encoder_normalize_before", False)
+    args.encoder_learned_pos = args.get("encoder_learned_pos", False)
+    args.decoder_embed_path = args.get("decoder_embed_path", None)
+    args.decoder_embed_dim = args.get("decoder_embed_dim", args.encoder_embed_dim)
+    args.decoder_ffn_embed_dim = args.get("decoder_ffn_embed_dim", args.encoder_ffn_embed_dim
     )
-    args.decoder_layers = getattr(args, "decoder_layers", 6)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 8)
-    args.decoder_normalize_before = getattr(args, "decoder_normalize_before", False)
-    args.decoder_learned_pos = getattr(args, "decoder_learned_pos", False)
-    args.attention_dropout = getattr(args, "attention_dropout", 0.0)
-    args.activation_dropout = getattr(args, "activation_dropout", 0.0)
-    args.activation_fn = getattr(args, "activation_fn", "relu")
-    args.dropout = getattr(args, "dropout", 0.1)
-    args.adaptive_softmax_cutoff = getattr(args, "adaptive_softmax_cutoff", None)
-    args.adaptive_softmax_dropout = getattr(args, "adaptive_softmax_dropout", 0)
-    args.share_decoder_input_output_embed = getattr(
-        args, "share_decoder_input_output_embed", False
+    args.decoder_layers = args.get("decoder_layers", 6)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 8)
+    args.decoder_normalize_before = args.get("decoder_normalize_before", False)
+    args.decoder_learned_pos = args.get("decoder_learned_pos", False)
+    args.attention_dropout = args.get("attention_dropout", 0.0)
+    args.activation_dropout = args.get("activation_dropout", 0.0)
+    args.activation_fn = args.get("activation_fn", "relu")
+    args.dropout = args.get("dropout", 0.1)
+    args.adaptive_softmax_cutoff = args.get("adaptive_softmax_cutoff", None)
+    args.adaptive_softmax_dropout = args.get("adaptive_softmax_dropout", 0)
+    args.share_decoder_input_output_embed = args.get("share_decoder_input_output_embed", False
     )
-    args.share_all_embeddings = getattr(args, "share_all_embeddings", False)
-    args.no_token_positional_embeddings = getattr(
-        args, "no_token_positional_embeddings", False
+    args.share_all_embeddings = args.get("share_all_embeddings", False)
+    args.no_token_positional_embeddings = args.get("no_token_positional_embeddings", False
     )
-    args.adaptive_input = getattr(args, "adaptive_input", False)
-    args.no_cross_attention = getattr(args, "no_cross_attention", False)
-    args.cross_self_attention = getattr(args, "cross_self_attention", False)
+    args.adaptive_input = args.get("adaptive_input", False)
+    args.no_cross_attention = args.get("no_cross_attention", False)
+    args.cross_self_attention = args.get("cross_self_attention", False)
 
-    args.decoder_output_dim = getattr(
-        args, "decoder_output_dim", args.decoder_embed_dim
+    args.decoder_output_dim = args.get("decoder_output_dim", args.decoder_embed_dim
     )
-    args.decoder_input_dim = getattr(args, "decoder_input_dim", args.decoder_embed_dim)
+    args.decoder_input_dim = args.get("decoder_input_dim", args.decoder_embed_dim)
 
-    args.no_scale_embedding = getattr(args, "no_scale_embedding", False)
-    args.layernorm_embedding = getattr(args, "layernorm_embedding", False)
-    args.tie_adaptive_weights = getattr(args, "tie_adaptive_weights", False)
-    args.checkpoint_activations = getattr(args, "checkpoint_activations", False)
-    args.offload_activations = getattr(args, "offload_activations", False)
+    args.no_scale_embedding = args.get("no_scale_embedding", False)
+    args.layernorm_embedding = args.get("layernorm_embedding", False)
+    args.tie_adaptive_weights = args.get("tie_adaptive_weights", False)
+    args.checkpoint_activations = args.get("checkpoint_activations", False)
+    args.offload_activations = args.get("offload_activations", False)
     if args.offload_activations:
         args.checkpoint_activations = True
-    args.encoder_layers_to_keep = getattr(args, "encoder_layers_to_keep", None)
-    args.decoder_layers_to_keep = getattr(args, "decoder_layers_to_keep", None)
-    args.encoder_layerdrop = getattr(args, "encoder_layerdrop", 0)
-    args.decoder_layerdrop = getattr(args, "decoder_layerdrop", 0)
-    args.quant_noise_pq = getattr(args, "quant_noise_pq", 0)
-    args.quant_noise_pq_block_size = getattr(args, "quant_noise_pq_block_size", 8)
-    args.quant_noise_scalar = getattr(args, "quant_noise_scalar", 0)
+    args.encoder_layers_to_keep = args.get("encoder_layers_to_keep", None)
+    args.decoder_layers_to_keep = args.get("decoder_layers_to_keep", None)
+    args.encoder_layerdrop = args.get("encoder_layerdrop", 0)
+    args.decoder_layerdrop = args.get("decoder_layerdrop", 0)
+    args.quant_noise_pq = args.get("quant_noise_pq", 0)
+    args.quant_noise_pq_block_size = args.get("quant_noise_pq_block_size", 8)
+    args.quant_noise_scalar = args.get("quant_noise_scalar", 0)
 
 
 @register_model_architecture("transformer", "transformer_iwslt_de_en")
 def transformer_iwslt_de_en(args):
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 512)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 1024)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 4)
-    args.encoder_layers = getattr(args, "encoder_layers", 6)
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 512)
-    args.decoder_ffn_embed_dim = getattr(args, "decoder_ffn_embed_dim", 1024)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 4)
-    args.decoder_layers = getattr(args, "decoder_layers", 6)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 512)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 1024)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 4)
+    args.encoder_layers = args.get("encoder_layers", 6)
+    args.decoder_embed_dim = args.get("decoder_embed_dim", 512)
+    args.decoder_ffn_embed_dim = args.get("decoder_ffn_embed_dim", 1024)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 4)
+    args.decoder_layers = args.get("decoder_layers", 6)
     base_architecture(args)
 
 
@@ -242,34 +237,34 @@ def transformer_wmt_en_de(args):
 # parameters used in the "Attention Is All You Need" paper (Vaswani et al., 2017)
 @register_model_architecture("transformer", "transformer_vaswani_wmt_en_de_big")
 def transformer_vaswani_wmt_en_de_big(args):
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 1024)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 4096)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 16)
-    args.encoder_normalize_before = getattr(args, "encoder_normalize_before", False)
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 1024)
-    args.decoder_ffn_embed_dim = getattr(args, "decoder_ffn_embed_dim", 4096)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 16)
-    args.dropout = getattr(args, "dropout", 0.3)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 1024)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 4096)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 16)
+    args.encoder_normalize_before = args.get("encoder_normalize_before", False)
+    args.decoder_embed_dim = args.get("decoder_embed_dim", 1024)
+    args.decoder_ffn_embed_dim = args.get("decoder_ffn_embed_dim", 4096)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 16)
+    args.dropout = args.get("dropout", 0.3)
     base_architecture(args)
 
 
 @register_model_architecture("transformer", "transformer_vaswani_wmt_en_fr_big")
 def transformer_vaswani_wmt_en_fr_big(args):
-    args.dropout = getattr(args, "dropout", 0.1)
+    args.dropout = args.get("dropout", 0.1)
     transformer_vaswani_wmt_en_de_big(args)
 
 
 @register_model_architecture("transformer", "transformer_wmt_en_de_big")
 def transformer_wmt_en_de_big(args):
-    args.attention_dropout = getattr(args, "attention_dropout", 0.1)
+    args.attention_dropout = args.get("attention_dropout", 0.1)
     transformer_vaswani_wmt_en_de_big(args)
 
 
 # default parameters used in tensor2tensor implementation
 @register_model_architecture("transformer", "transformer_wmt_en_de_big_t2t")
 def transformer_wmt_en_de_big_t2t(args):
-    args.encoder_normalize_before = getattr(args, "encoder_normalize_before", True)
-    args.decoder_normalize_before = getattr(args, "decoder_normalize_before", True)
-    args.attention_dropout = getattr(args, "attention_dropout", 0.1)
-    args.activation_dropout = getattr(args, "activation_dropout", 0.1)
+    args.encoder_normalize_before = args.get("encoder_normalize_before", True)
+    args.decoder_normalize_before = args.get("decoder_normalize_before", True)
+    args.attention_dropout = args.get("attention_dropout", 0.1)
+    args.activation_dropout = args.get("activation_dropout", 0.1)
     transformer_vaswani_wmt_en_de_big(args)

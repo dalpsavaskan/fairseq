@@ -234,7 +234,7 @@ def _override_attr(
             # private member, skip
             continue
 
-        val = get_default(v) if not hasattr(args, k) else getattr(args, k)
+        val = get_default(v) if not hasattr(args, k) else args.get(k)
 
         field_type = interpret_dc_type(v.type)
         if (
@@ -332,7 +332,7 @@ def override_module_args(args: Namespace) -> Tuple[List[str], List[str]]:
             if hasattr(args, k):
                 migrate_registry(
                     k,
-                    getattr(args, k),
+                    args.get(k),
                     v["dataclass_registry"],
                     args,
                     overrides,
@@ -403,25 +403,25 @@ def convert_namespace_to_omegaconf(args: Namespace) -> DictConfig:
     from omegaconf import _utils
 
     with omegaconf_no_object_check():
-        if cfg.task is None and getattr(args, "task", None):
+        if cfg.task is None and args.get("task", None):
             cfg.task = Namespace(**vars(args))
             from fairseq.tasks import TASK_REGISTRY
 
             _set_legacy_defaults(cfg.task, TASK_REGISTRY[args.task])
             cfg.task._name = args.task
-        if cfg.model is None and getattr(args, "arch", None):
+        if cfg.model is None and args.get("arch", None):
             cfg.model = Namespace(**vars(args))
             from fairseq.models import ARCH_MODEL_REGISTRY
 
             _set_legacy_defaults(cfg.model, ARCH_MODEL_REGISTRY[args.arch])
             cfg.model._name = args.arch
-        if cfg.optimizer is None and getattr(args, "optimizer", None):
+        if cfg.optimizer is None and args.get("optimizer", None):
             cfg.optimizer = Namespace(**vars(args))
             from fairseq.optim import OPTIMIZER_REGISTRY
 
             _set_legacy_defaults(cfg.optimizer, OPTIMIZER_REGISTRY[args.optimizer])
             cfg.optimizer._name = args.optimizer
-        if cfg.lr_scheduler is None and getattr(args, "lr_scheduler", None):
+        if cfg.lr_scheduler is None and args.get("lr_scheduler", None):
             cfg.lr_scheduler = Namespace(**vars(args))
             from fairseq.optim.lr_scheduler import LR_SCHEDULER_REGISTRY
 
@@ -429,7 +429,7 @@ def convert_namespace_to_omegaconf(args: Namespace) -> DictConfig:
                 cfg.lr_scheduler, LR_SCHEDULER_REGISTRY[args.lr_scheduler]
             )
             cfg.lr_scheduler._name = args.lr_scheduler
-        if cfg.criterion is None and getattr(args, "criterion", None):
+        if cfg.criterion is None and args.get("criterion", None):
             cfg.criterion = Namespace(**vars(args))
             from fairseq.criterions import CRITERION_REGISTRY
 

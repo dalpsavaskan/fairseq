@@ -181,7 +181,7 @@ class TTSTransformerDecoder(FairseqIncrementalDecoder):
         )
 
         self.ctc_proj = None
-        if getattr(args, "ctc_weight", 0.0) > 0.0:
+        if args.get("ctc_weight", 0.0) > 0.0:
             self.ctc_proj = nn.Linear(self.out_dim, len(src_dict))
 
         self.apply(decoder_init)
@@ -417,38 +417,36 @@ class TTSTransformerModel(FairseqEncoderDecoderModel):
 
 @register_model_architecture("tts_transformer", "tts_transformer")
 def base_architecture(args):
-    args.dropout = getattr(args, "dropout", 0.1)
-    args.output_frame_dim = getattr(args, "output_frame_dim", 80)
-    args.speaker_embed_dim = getattr(args, "speaker_embed_dim", 64)
+    args.dropout = args.get("dropout", 0.1)
+    args.output_frame_dim = args.get("output_frame_dim", 80)
+    args.speaker_embed_dim = args.get("speaker_embed_dim", 64)
     # encoder prenet
-    args.encoder_dropout = getattr(args, "encoder_dropout", 0.5)
-    args.encoder_conv_layers = getattr(args, "encoder_conv_layers", 3)
-    args.encoder_conv_kernel_size = getattr(args, "encoder_conv_kernel_size", 5)
+    args.encoder_dropout = args.get("encoder_dropout", 0.5)
+    args.encoder_conv_layers = args.get("encoder_conv_layers", 3)
+    args.encoder_conv_kernel_size = args.get("encoder_conv_kernel_size", 5)
     # encoder transformer layers
-    args.encoder_transformer_layers = getattr(args, "encoder_transformer_layers", 6)
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 512)
-    args.encoder_ffn_embed_dim = getattr(
-        args, "encoder_ffn_embed_dim", 4 * args.encoder_embed_dim
+    args.encoder_transformer_layers = args.get("encoder_transformer_layers", 6)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 512)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 4 * args.encoder_embed_dim
     )
-    args.encoder_normalize_before = getattr(args, "encoder_normalize_before", False)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 4)
-    args.attention_dropout = getattr(args, "attention_dropout", 0.0)
-    args.activation_dropout = getattr(args, "activation_dropout", 0.0)
-    args.activation_fn = getattr(args, "activation_fn", "relu")
+    args.encoder_normalize_before = args.get("encoder_normalize_before", False)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 4)
+    args.attention_dropout = args.get("attention_dropout", 0.0)
+    args.activation_dropout = args.get("activation_dropout", 0.0)
+    args.activation_fn = args.get("activation_fn", "relu")
     # decoder prenet
-    args.prenet_dropout = getattr(args, "prenet_dropout", 0.5)
-    args.prenet_layers = getattr(args, "prenet_layers", 2)
-    args.prenet_dim = getattr(args, "prenet_dim", 256)
+    args.prenet_dropout = args.get("prenet_dropout", 0.5)
+    args.prenet_layers = args.get("prenet_layers", 2)
+    args.prenet_dim = args.get("prenet_dim", 256)
     # decoder postnet
-    args.postnet_dropout = getattr(args, "postnet_dropout", 0.5)
-    args.postnet_layers = getattr(args, "postnet_layers", 5)
-    args.postnet_conv_dim = getattr(args, "postnet_conv_dim", 512)
-    args.postnet_conv_kernel_size = getattr(args, "postnet_conv_kernel_size", 5)
+    args.postnet_dropout = args.get("postnet_dropout", 0.5)
+    args.postnet_layers = args.get("postnet_layers", 5)
+    args.postnet_conv_dim = args.get("postnet_conv_dim", 512)
+    args.postnet_conv_kernel_size = args.get("postnet_conv_kernel_size", 5)
     # decoder transformer layers
-    args.decoder_transformer_layers = getattr(args, "decoder_transformer_layers", 6)
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 512)
-    args.decoder_ffn_embed_dim = getattr(
-        args, "decoder_ffn_embed_dim", 4 * args.decoder_embed_dim
+    args.decoder_transformer_layers = args.get("decoder_transformer_layers", 6)
+    args.decoder_embed_dim = args.get("decoder_embed_dim", 512)
+    args.decoder_ffn_embed_dim = args.get("decoder_ffn_embed_dim", 4 * args.decoder_embed_dim
     )
-    args.decoder_normalize_before = getattr(args, "decoder_normalize_before", False)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 4)
+    args.decoder_normalize_before = args.get("decoder_normalize_before", False)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 4)

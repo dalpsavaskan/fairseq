@@ -73,7 +73,7 @@ class W2lConvGluEncoderModel(FairseqEncoderModel):
     @classmethod
     def build_model(cls, args, task):
         """Build a new model instance."""
-        conv_enc_config = getattr(args, "conv_enc_config", default_conv_enc_config)
+        conv_enc_config = args.get("conv_enc_config", default_conv_enc_config)
         encoder = W2lConvGluEncoder(
             vocab_size=len(task.target_dictionary),
             input_feat_per_channel=args.input_feat_per_channel,
@@ -172,6 +172,6 @@ class W2lConvGluEncoder(FairseqEncoder):
 
 @register_model_architecture("asr_w2l_conv_glu_encoder", "w2l_conv_glu_enc")
 def w2l_conv_glu_enc(args):
-    args.input_feat_per_channel = getattr(args, "input_feat_per_channel", 80)
-    args.in_channels = getattr(args, "in_channels", 1)
-    args.conv_enc_config = getattr(args, "conv_enc_config", default_conv_enc_config)
+    args.input_feat_per_channel = args.get("input_feat_per_channel", 80)
+    args.in_channels = args.get("in_channels", 1)
+    args.conv_enc_config = args.get("conv_enc_config", default_conv_enc_config)

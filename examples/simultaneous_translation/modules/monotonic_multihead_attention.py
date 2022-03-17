@@ -37,16 +37,16 @@ class MonotonicAttention(MultiheadAttention):
         super().__init__(
             embed_dim=args.decoder_embed_dim,
             num_heads=args.decoder_attention_heads,
-            kdim=getattr(args, "encoder_embed_dim", None),
-            vdim=getattr(args, "encoder_embed_dim", None),
+            kdim=args.get("encoder_embed_dim", None),
+            vdim=args.get("encoder_embed_dim", None),
             dropout=args.attention_dropout,
             encoder_decoder_attention=True,
         )
 
         self.soft_attention = False
 
-        self.eps = getattr(args, "attention_eps", True)
-        self.mass_preservation = getattr(args, "mass_preservation", True)
+        self.eps = args.get("attention_eps", True)
+        self.mass_preservation = args.get("mass_preservation", True)
 
         self.noise_type = args.noise_type
         self.noise_mean = args.noise_mean

@@ -399,7 +399,7 @@ class FastSpeech2Model(FairseqEncoderModel):
 
         out_dim = args.output_frame_dim * args.n_frames_per_step
         self.ctc_proj = None
-        if getattr(args, "ctc_weight", 0.0) > 0.0:
+        if args.get("ctc_weight", 0.0) > 0.0:
             self.ctc_proj = nn.Linear(out_dim, len(src_dict))
 
     @classmethod
@@ -422,27 +422,27 @@ class FastSpeech2Model(FairseqEncoderModel):
 
 @register_model_architecture("fastspeech2", "fastspeech2")
 def base_architecture(args):
-    args.dropout = getattr(args, "dropout", 0.2)
-    args.output_frame_dim = getattr(args, "output_frame_dim", 80)
-    args.speaker_embed_dim = getattr(args, "speaker_embed_dim", 64)
+    args.dropout = args.get("dropout", 0.2)
+    args.output_frame_dim = args.get("output_frame_dim", 80)
+    args.speaker_embed_dim = args.get("speaker_embed_dim", 64)
     # FFT blocks
-    args.fft_hidden_dim = getattr(args, "fft_hidden_dim", 1024)
-    args.fft_kernel_size = getattr(args, "fft_kernel_size", 9)
-    args.attention_dropout = getattr(args, "attention_dropout", 0.0)
-    args.encoder_layers = getattr(args, "encoder_layers", 4)
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 256)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 2)
-    args.decoder_layers = getattr(args, "decoder_layers", 4)
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 256)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 2)
+    args.fft_hidden_dim = args.get("fft_hidden_dim", 1024)
+    args.fft_kernel_size = args.get("fft_kernel_size", 9)
+    args.attention_dropout = args.get("attention_dropout", 0.0)
+    args.encoder_layers = args.get("encoder_layers", 4)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 256)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 2)
+    args.decoder_layers = args.get("decoder_layers", 4)
+    args.decoder_embed_dim = args.get("decoder_embed_dim", 256)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 2)
     # variance predictor
-    args.var_pred_n_bins = getattr(args, "var_pred_n_bins", 256)
-    args.var_pred_hidden_dim = getattr(args, "var_pred_hidden_dim", 256)
-    args.var_pred_kernel_size = getattr(args, "var_pred_kernel_size", 3)
-    args.var_pred_dropout = getattr(args, "var_pred_dropout", 0.5)
+    args.var_pred_n_bins = args.get("var_pred_n_bins", 256)
+    args.var_pred_hidden_dim = args.get("var_pred_hidden_dim", 256)
+    args.var_pred_kernel_size = args.get("var_pred_kernel_size", 3)
+    args.var_pred_dropout = args.get("var_pred_dropout", 0.5)
     # postnet
-    args.add_postnet = getattr(args, "add_postnet", False)
-    args.postnet_dropout = getattr(args, "postnet_dropout", 0.5)
-    args.postnet_layers = getattr(args, "postnet_layers", 5)
-    args.postnet_conv_dim = getattr(args, "postnet_conv_dim", 512)
-    args.postnet_conv_kernel_size = getattr(args, "postnet_conv_kernel_size", 5)
+    args.add_postnet = args.get("add_postnet", False)
+    args.postnet_dropout = args.get("postnet_dropout", 0.5)
+    args.postnet_layers = args.get("postnet_layers", 5)
+    args.postnet_conv_dim = args.get("postnet_conv_dim", 512)
+    args.postnet_conv_kernel_size = args.get("postnet_conv_kernel_size", 5)

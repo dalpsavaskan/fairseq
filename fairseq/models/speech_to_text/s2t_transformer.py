@@ -243,7 +243,7 @@ class S2TTransformerModel(FairseqEncoderDecoderModel):
     @classmethod
     def build_encoder(cls, args):
         encoder = S2TTransformerEncoder(args)
-        pretraining_path = getattr(args, "load_pretrained_encoder_from", None)
+        pretraining_path = args.get("load_pretrained_encoder_from", None)
         if pretraining_path is not None:
             if not Path(pretraining_path).exists():
                 logger.warning(
@@ -449,98 +449,94 @@ class TransformerDecoderScriptable(TransformerDecoder):
 
 @register_model_architecture(model_name="s2t_transformer", arch_name="s2t_transformer")
 def base_architecture(args):
-    args.encoder_freezing_updates = getattr(args, "encoder_freezing_updates", 0)
+    args.encoder_freezing_updates = args.get("encoder_freezing_updates", 0)
     # Convolutional subsampler
-    args.conv_kernel_sizes = getattr(args, "conv_kernel_sizes", "5,5")
-    args.conv_channels = getattr(args, "conv_channels", 1024)
+    args.conv_kernel_sizes = args.get("conv_kernel_sizes", "5,5")
+    args.conv_channels = args.get("conv_channels", 1024)
     # Transformer
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 512)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 2048)
-    args.encoder_layers = getattr(args, "encoder_layers", 12)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 8)
-    args.encoder_normalize_before = getattr(args, "encoder_normalize_before", True)
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", args.encoder_embed_dim)
-    args.decoder_ffn_embed_dim = getattr(
-        args, "decoder_ffn_embed_dim", args.encoder_ffn_embed_dim
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 512)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 2048)
+    args.encoder_layers = args.get("encoder_layers", 12)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 8)
+    args.encoder_normalize_before = args.get("encoder_normalize_before", True)
+    args.decoder_embed_dim = args.get("decoder_embed_dim", args.encoder_embed_dim)
+    args.decoder_ffn_embed_dim = args.get("decoder_ffn_embed_dim", args.encoder_ffn_embed_dim
     )
-    args.decoder_layers = getattr(args, "decoder_layers", 6)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 8)
-    args.decoder_normalize_before = getattr(args, "decoder_normalize_before", True)
-    args.decoder_learned_pos = getattr(args, "decoder_learned_pos", False)
-    args.dropout = getattr(args, "dropout", 0.1)
-    args.attention_dropout = getattr(args, "attention_dropout", args.dropout)
-    args.activation_dropout = getattr(args, "activation_dropout", args.dropout)
-    args.activation_fn = getattr(args, "activation_fn", "relu")
-    args.adaptive_softmax_cutoff = getattr(args, "adaptive_softmax_cutoff", None)
-    args.adaptive_softmax_dropout = getattr(args, "adaptive_softmax_dropout", 0)
-    args.share_decoder_input_output_embed = getattr(
-        args, "share_decoder_input_output_embed", False
+    args.decoder_layers = args.get("decoder_layers", 6)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 8)
+    args.decoder_normalize_before = args.get("decoder_normalize_before", True)
+    args.decoder_learned_pos = args.get("decoder_learned_pos", False)
+    args.dropout = args.get("dropout", 0.1)
+    args.attention_dropout = args.get("attention_dropout", args.dropout)
+    args.activation_dropout = args.get("activation_dropout", args.dropout)
+    args.activation_fn = args.get("activation_fn", "relu")
+    args.adaptive_softmax_cutoff = args.get("adaptive_softmax_cutoff", None)
+    args.adaptive_softmax_dropout = args.get("adaptive_softmax_dropout", 0)
+    args.share_decoder_input_output_embed = args.get("share_decoder_input_output_embed", False
     )
-    args.no_token_positional_embeddings = getattr(
-        args, "no_token_positional_embeddings", False
+    args.no_token_positional_embeddings = args.get("no_token_positional_embeddings", False
     )
-    args.adaptive_input = getattr(args, "adaptive_input", False)
-    args.decoder_layerdrop = getattr(args, "decoder_layerdrop", 0.0)
-    args.decoder_output_dim = getattr(
-        args, "decoder_output_dim", args.decoder_embed_dim
+    args.adaptive_input = args.get("adaptive_input", False)
+    args.decoder_layerdrop = args.get("decoder_layerdrop", 0.0)
+    args.decoder_output_dim = args.get("decoder_output_dim", args.decoder_embed_dim
     )
-    args.decoder_input_dim = getattr(args, "decoder_input_dim", args.decoder_embed_dim)
-    args.no_scale_embedding = getattr(args, "no_scale_embedding", False)
-    args.quant_noise_pq = getattr(args, "quant_noise_pq", 0)
+    args.decoder_input_dim = args.get("decoder_input_dim", args.decoder_embed_dim)
+    args.no_scale_embedding = args.get("no_scale_embedding", False)
+    args.quant_noise_pq = args.get("quant_noise_pq", 0)
 
 
 @register_model_architecture("s2t_transformer", "s2t_transformer_s")
 def s2t_transformer_s(args):
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 256)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 256 * 8)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 4)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 4)
-    args.dropout = getattr(args, "dropout", 0.1)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 256)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 256 * 8)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 4)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 4)
+    args.dropout = args.get("dropout", 0.1)
     base_architecture(args)
 
 
 @register_model_architecture("s2t_transformer", "s2t_transformer_xs")
 def s2t_transformer_xs(args):
-    args.encoder_layers = getattr(args, "encoder_layers", 6)
-    args.decoder_layers = getattr(args, "decoder_layers", 3)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 256 * 4)
-    args.dropout = getattr(args, "dropout", 0.3)
+    args.encoder_layers = args.get("encoder_layers", 6)
+    args.decoder_layers = args.get("decoder_layers", 3)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 256 * 4)
+    args.dropout = args.get("dropout", 0.3)
     s2t_transformer_s(args)
 
 
 @register_model_architecture("s2t_transformer", "s2t_transformer_sp")
 def s2t_transformer_sp(args):
-    args.encoder_layers = getattr(args, "encoder_layers", 16)
+    args.encoder_layers = args.get("encoder_layers", 16)
     s2t_transformer_s(args)
 
 
 @register_model_architecture("s2t_transformer", "s2t_transformer_m")
 def s2t_transformer_m(args):
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 512)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 512 * 4)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 8)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 8)
-    args.dropout = getattr(args, "dropout", 0.15)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 512)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 512 * 4)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 8)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 8)
+    args.dropout = args.get("dropout", 0.15)
     base_architecture(args)
 
 
 @register_model_architecture("s2t_transformer", "s2t_transformer_mp")
 def s2t_transformer_mp(args):
-    args.encoder_layers = getattr(args, "encoder_layers", 16)
+    args.encoder_layers = args.get("encoder_layers", 16)
     s2t_transformer_m(args)
 
 
 @register_model_architecture("s2t_transformer", "s2t_transformer_l")
 def s2t_transformer_l(args):
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 1024)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 1024 * 4)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 16)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 16)
-    args.dropout = getattr(args, "dropout", 0.2)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 1024)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 1024 * 4)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 16)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 16)
+    args.dropout = args.get("dropout", 0.2)
     base_architecture(args)
 
 
 @register_model_architecture("s2t_transformer", "s2t_transformer_lp")
 def s2t_transformer_lp(args):
-    args.encoder_layers = getattr(args, "encoder_layers", 16)
+    args.encoder_layers = args.get("encoder_layers", 16)
     s2t_transformer_l(args)

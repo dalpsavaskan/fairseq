@@ -14,7 +14,7 @@ class HeadSelectionLoss(_Loss):
     def __init__(self, args):
         super().__init__()
         self.args = args
-        self.kl_weight = getattr(args, "kl_weight", 0.0)
+        self.kl_weight = args.get("kl_weight", 0.0)
 
     def forward(self, head_samples, sample_sizes, prior=0.5, eps=1e-7):
         """

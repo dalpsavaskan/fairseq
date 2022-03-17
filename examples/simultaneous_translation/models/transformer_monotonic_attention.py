@@ -99,7 +99,7 @@ class TransformerMonotonicDecoder(TransformerDecoder):
                 for _ in range(args.decoder_layers)
             ]
         )
-        self.policy_criterion = getattr(args, "policy_criterion", "any")
+        self.policy_criterion = args.get("policy_criterion", "any")
         self.num_updates = None
 
     def set_num_updates(self, num_updates):
@@ -263,7 +263,7 @@ class TransformerMonotonicDecoder(TransformerDecoder):
 @register_model_architecture("transformer_monotonic", "transformer_monotonic")
 def base_monotonic_architecture(args):
     base_architecture(args)
-    args.encoder_unidirectional = getattr(args, "encoder_unidirectional", False)
+    args.encoder_unidirectional = args.get("encoder_unidirectional", False)
 
 
 @register_model_architecture(

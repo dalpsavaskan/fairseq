@@ -78,11 +78,11 @@ class TransformerPointerGeneratorModel(TransformerModel):
         if args.decoder_layers_to_keep:
             args.decoder_layers = len(args.decoder_layers_to_keep.split(","))
 
-        if getattr(args, "max_source_positions", None) is None:
+        if args.get("max_source_positions", None) is None:
             args.max_source_positions = DEFAULT_MAX_SOURCE_POSITIONS
-        if getattr(args, "max_target_positions", None) is None:
+        if args.get("max_target_positions", None) is None:
             args.max_target_positions = DEFAULT_MAX_TARGET_POSITIONS
-        if getattr(args, "source_position_markers", None) is None:
+        if args.get("source_position_markers", None) is None:
             args.source_position_markers = args.max_source_positions
 
         src_dict, tgt_dict = task.source_dictionary, task.target_dictionary
@@ -442,8 +442,8 @@ class Embedding(nn.Embedding):
     "transformer_pointer_generator", "transformer_pointer_generator"
 )
 def transformer_pointer_generator(args):
-    args.alignment_heads = getattr(args, "alignment_heads", 1)
-    args.alignment_layer = getattr(args, "alignment_layer", -1)
+    args.alignment_heads = args.get("alignment_heads", 1)
+    args.alignment_layer = args.get("alignment_layer", -1)
     base_architecture(args)
     if args.alignment_layer < 0:
         args.alignment_layer = args.decoder_layers + args.alignment_layer
@@ -453,14 +453,14 @@ def transformer_pointer_generator(args):
     "transformer_pointer_generator", "transformer_pointer_generator_iwslt_de_en"
 )
 def transformer_pointer_generator_iwslt_de_en(args):
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 512)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 1024)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 4)
-    args.encoder_layers = getattr(args, "encoder_layers", 6)
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 512)
-    args.decoder_ffn_embed_dim = getattr(args, "decoder_ffn_embed_dim", 1024)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 4)
-    args.decoder_layers = getattr(args, "decoder_layers", 6)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 512)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 1024)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 4)
+    args.encoder_layers = args.get("encoder_layers", 6)
+    args.decoder_embed_dim = args.get("decoder_embed_dim", 512)
+    args.decoder_ffn_embed_dim = args.get("decoder_ffn_embed_dim", 1024)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 4)
+    args.decoder_layers = args.get("decoder_layers", 6)
     transformer_pointer_generator(args)
 
 
@@ -478,14 +478,14 @@ def transformer_pointer_generator_wmt_en_de(args):
     "transformer_pointer_generator_vaswani_wmt_en_de_big",
 )
 def transformer_pointer_generator_vaswani_wmt_en_de_big(args):
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 1024)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 4096)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 16)
-    args.encoder_normalize_before = getattr(args, "encoder_normalize_before", False)
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 1024)
-    args.decoder_ffn_embed_dim = getattr(args, "decoder_ffn_embed_dim", 4096)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 16)
-    args.dropout = getattr(args, "dropout", 0.3)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 1024)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 4096)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 16)
+    args.encoder_normalize_before = args.get("encoder_normalize_before", False)
+    args.decoder_embed_dim = args.get("decoder_embed_dim", 1024)
+    args.decoder_ffn_embed_dim = args.get("decoder_ffn_embed_dim", 4096)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 16)
+    args.dropout = args.get("dropout", 0.3)
     transformer_pointer_generator(args)
 
 
@@ -494,7 +494,7 @@ def transformer_pointer_generator_vaswani_wmt_en_de_big(args):
     "transformer_pointer_generator_vaswani_wmt_en_fr_big",
 )
 def transformer_pointer_generator_vaswani_wmt_en_fr_big(args):
-    args.dropout = getattr(args, "dropout", 0.1)
+    args.dropout = args.get("dropout", 0.1)
     transformer_pointer_generator_vaswani_wmt_en_de_big(args)
 
 
@@ -502,7 +502,7 @@ def transformer_pointer_generator_vaswani_wmt_en_fr_big(args):
     "transformer_pointer_generator", "transformer_pointer_generator_wmt_en_de_big"
 )
 def transformer_pointer_generator_wmt_en_de_big(args):
-    args.attention_dropout = getattr(args, "attention_dropout", 0.1)
+    args.attention_dropout = args.get("attention_dropout", 0.1)
     transformer_pointer_generator_vaswani_wmt_en_de_big(args)
 
 
@@ -511,8 +511,8 @@ def transformer_pointer_generator_wmt_en_de_big(args):
     "transformer_pointer_generator", "transformer_pointer_generator_wmt_en_de_big_t2t"
 )
 def transformer_pointer_generator_wmt_en_de_big_t2t(args):
-    args.encoder_normalize_before = getattr(args, "encoder_normalize_before", True)
-    args.decoder_normalize_before = getattr(args, "decoder_normalize_before", True)
-    args.attention_dropout = getattr(args, "attention_dropout", 0.1)
-    args.activation_dropout = getattr(args, "activation_dropout", 0.1)
+    args.encoder_normalize_before = args.get("encoder_normalize_before", True)
+    args.decoder_normalize_before = args.get("decoder_normalize_before", True)
+    args.attention_dropout = args.get("attention_dropout", 0.1)
+    args.activation_dropout = args.get("activation_dropout", 0.1)
     transformer_pointer_generator_vaswani_wmt_en_de_big(args)

@@ -69,7 +69,7 @@ def main(args):
         args.common_eval.path.split(os.pathsep),
         arg_overrides=overrides,
         task=task,
-        suffix=getattr(args, "checkpoint_suffix", ""),
+        suffix=args.get("checkpoint_suffix", ""),
     )
 
     # Set dictionaries

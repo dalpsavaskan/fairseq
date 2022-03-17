@@ -89,7 +89,7 @@ class FairseqDataclass:
                     # private member, skip
                     continue
                 if hasattr(args, k):
-                    setattr(config, k, getattr(args, k))
+                    setattr(config, k, args.get(k))
 
             return config
 

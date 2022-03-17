@@ -41,7 +41,7 @@ class MaskedLMModel(FairseqEncoderModel):
         # if specified then apply bert initialization on the model. We need
         # to explictly call this to make sure that the output embeddings
         # and projection layers are also correctly initialized
-        if getattr(args, "apply_bert_init", False):
+        if args.get("apply_bert_init", False):
             self.apply(init_bert_params)
 
     @staticmethod
@@ -206,7 +206,7 @@ class MaskedLMEncoder(FairseqEncoder):
         self.lm_output_learned_bias = None
 
         # Remove head is set to true during fine-tuning
-        self.load_softmax = not getattr(args, "remove_head", False)
+        self.load_softmax = not args.get("remove_head", False)
 
         self.masked_lm_pooler = nn.Linear(
             args.encoder_embed_dim, args.encoder_embed_dim
@@ -313,92 +313,86 @@ class MaskedLMEncoder(FairseqEncoder):
 
 @register_model_architecture("masked_lm", "masked_lm")
 def base_architecture(args):
-    args.dropout = getattr(args, "dropout", 0.1)
-    args.attention_dropout = getattr(args, "attention_dropout", 0.1)
-    args.act_dropout = getattr(args, "act_dropout", 0.0)
+    args.dropout = args.get("dropout", 0.1)
+    args.attention_dropout = args.get("attention_dropout", 0.1)
+    args.act_dropout = args.get("act_dropout", 0.0)
 
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 4096)
-    args.encoder_layers = getattr(args, "encoder_layers", 6)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 8)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 4096)
+    args.encoder_layers = args.get("encoder_layers", 6)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 8)
 
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 1024)
-    args.share_encoder_input_output_embed = getattr(
-        args, "share_encoder_input_output_embed", False
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 1024)
+    args.share_encoder_input_output_embed = args.get("share_encoder_input_output_embed", False
     )
-    args.encoder_learned_pos = getattr(args, "encoder_learned_pos", False)
-    args.no_token_positional_embeddings = getattr(
-        args, "no_token_positional_embeddings", False
+    args.encoder_learned_pos = args.get("encoder_learned_pos", False)
+    args.no_token_positional_embeddings = args.get("no_token_positional_embeddings", False
     )
-    args.num_segment = getattr(args, "num_segment", 2)
+    args.num_segment = args.get("num_segment", 2)
 
-    args.sentence_class_num = getattr(args, "sentence_class_num", 2)
-    args.sent_loss = getattr(args, "sent_loss", False)
+    args.sentence_class_num = args.get("sentence_class_num", 2)
+    args.sent_loss = args.get("sent_loss", False)
 
-    args.apply_bert_init = getattr(args, "apply_bert_init", False)
+    args.apply_bert_init = args.get("apply_bert_init", False)
 
-    args.activation_fn = getattr(args, "activation_fn", "relu")
-    args.pooler_activation_fn = getattr(args, "pooler_activation_fn", "tanh")
-    args.encoder_normalize_before = getattr(args, "encoder_normalize_before", False)
+    args.activation_fn = args.get("activation_fn", "relu")
+    args.pooler_activation_fn = args.get("pooler_activation_fn", "tanh")
+    args.encoder_normalize_before = args.get("encoder_normalize_before", False)
 
 
 @register_model_architecture("masked_lm", "bert_base")
 def bert_base_architecture(args):
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 768)
-    args.share_encoder_input_output_embed = getattr(
-        args, "share_encoder_input_output_embed", True
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 768)
+    args.share_encoder_input_output_embed = args.get("share_encoder_input_output_embed", True
     )
-    args.no_token_positional_embeddings = getattr(
-        args, "no_token_positional_embeddings", False
+    args.no_token_positional_embeddings = args.get("no_token_positional_embeddings", False
     )
-    args.encoder_learned_pos = getattr(args, "encoder_learned_pos", True)
-    args.num_segment = getattr(args, "num_segment", 2)
+    args.encoder_learned_pos = args.get("encoder_learned_pos", True)
+    args.num_segment = args.get("num_segment", 2)
 
-    args.encoder_layers = getattr(args, "encoder_layers", 12)
+    args.encoder_layers = args.get("encoder_layers", 12)
 
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 12)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 3072)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 12)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 3072)
 
-    args.sentence_class_num = getattr(args, "sentence_class_num", 2)
-    args.sent_loss = getattr(args, "sent_loss", True)
+    args.sentence_class_num = args.get("sentence_class_num", 2)
+    args.sent_loss = args.get("sent_loss", True)
 
-    args.apply_bert_init = getattr(args, "apply_bert_init", True)
+    args.apply_bert_init = args.get("apply_bert_init", True)
 
-    args.activation_fn = getattr(args, "activation_fn", "gelu")
-    args.pooler_activation_fn = getattr(args, "pooler_activation_fn", "tanh")
-    args.encoder_normalize_before = getattr(args, "encoder_normalize_before", True)
+    args.activation_fn = args.get("activation_fn", "gelu")
+    args.pooler_activation_fn = args.get("pooler_activation_fn", "tanh")
+    args.encoder_normalize_before = args.get("encoder_normalize_before", True)
     base_architecture(args)
 
 
 @register_model_architecture("masked_lm", "bert_large")
 def bert_large_architecture(args):
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 1024)
-    args.encoder_layers = getattr(args, "encoder_layers", 24)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 16)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 4096)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 1024)
+    args.encoder_layers = args.get("encoder_layers", 24)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 16)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 4096)
     bert_base_architecture(args)
 
 
 @register_model_architecture("masked_lm", "xlm_base")
 def xlm_architecture(args):
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 1024)
-    args.share_encoder_input_output_embed = getattr(
-        args, "share_encoder_input_output_embed", True
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 1024)
+    args.share_encoder_input_output_embed = args.get("share_encoder_input_output_embed", True
     )
-    args.no_token_positional_embeddings = getattr(
-        args, "no_token_positional_embeddings", False
+    args.no_token_positional_embeddings = args.get("no_token_positional_embeddings", False
     )
-    args.encoder_learned_pos = getattr(args, "encoder_learned_pos", True)
-    args.num_segment = getattr(args, "num_segment", 1)
+    args.encoder_learned_pos = args.get("encoder_learned_pos", True)
+    args.num_segment = args.get("num_segment", 1)
 
-    args.encoder_layers = getattr(args, "encoder_layers", 6)
+    args.encoder_layers = args.get("encoder_layers", 6)
 
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 8)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 4096)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 8)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 4096)
 
-    args.sent_loss = getattr(args, "sent_loss", False)
+    args.sent_loss = args.get("sent_loss", False)
 
-    args.activation_fn = getattr(args, "activation_fn", "gelu")
-    args.encoder_normalize_before = getattr(args, "encoder_normalize_before", False)
-    args.pooler_activation_fn = getattr(args, "pooler_activation_fn", "tanh")
-    args.apply_bert_init = getattr(args, "apply_bert_init", True)
+    args.activation_fn = args.get("activation_fn", "gelu")
+    args.encoder_normalize_before = args.get("encoder_normalize_before", False)
+    args.pooler_activation_fn = args.get("pooler_activation_fn", "tanh")
+    args.apply_bert_init = args.get("apply_bert_init", True)
     base_architecture(args)

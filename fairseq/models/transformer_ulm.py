@@ -96,9 +96,8 @@ class TransformerUnitLanguageModel(FairseqLanguageModel):
     def build_model(cls, args, task):
         base_ulm_architecture(args)
 
-        if getattr(args, "max_target_positions", None) is None:
-            args.max_target_positions = getattr(
-                args, "tokens_per_sample", DEFAULT_MAX_TARGET_POSITIONS
+        if args.get("max_target_positions", None) is None:
+            args.max_target_positions = args.get("tokens_per_sample", DEFAULT_MAX_TARGET_POSITIONS
             )
 
         embed_tokens = Embedding(

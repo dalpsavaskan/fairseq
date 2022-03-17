@@ -139,9 +139,9 @@ def DistributedFairseqModel(args, model, process_group, device):
         raise ValueError("Unknown --ddp-backend: " + args.ddp_backend)
 
     # kill hung distributed jobs after a timeout
-    if getattr(args, "heartbeat_timeout", -1) > 0:
+    if args.get("heartbeat_timeout", -1) > 0:
         wrapped_model = DistributedTimeoutWrapper(
-            wrapped_model, timeout=getattr(args, "heartbeat_timeout", -1)
+            wrapped_model, timeout=args.get("heartbeat_timeout", -1)
         )
 
     return wrapped_model

@@ -201,7 +201,7 @@ class SentenceRankingTask(LegacyFairseqTask):
         model = models.build_model(args, self, from_checkpoint)
 
         model.register_classification_head(
-            getattr(args, "ranking_head_name", "sentence_classification_head"),
+            args.get("ranking_head_name", "sentence_classification_head"),
             num_classes=1,
         )
 

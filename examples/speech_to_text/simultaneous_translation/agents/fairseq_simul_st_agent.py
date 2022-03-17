@@ -121,7 +121,7 @@ class FairseqSimulSTAgent(SpeechAgent):
 
         self.eos = DEFAULT_EOS
 
-        self.gpu = getattr(args, "gpu", False)
+        self.gpu = args.get("gpu", False)
 
         self.args = args
 

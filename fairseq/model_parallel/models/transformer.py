@@ -75,7 +75,7 @@ class ModelParallelTransformerModel(TransformerModel):
             args,
             tgt_dict,
             embed_tokens,
-            no_encoder_attn=getattr(args, "no_cross_attention", False),
+            no_encoder_attn=args.get("no_cross_attention", False),
         )
 
 

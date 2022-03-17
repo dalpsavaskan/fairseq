@@ -133,36 +133,35 @@ class HuggingFaceGPT2Decoder(FairseqIncrementalDecoder):
 
 @register_model_architecture("hf_gpt2", "hf_gpt2")
 def default_architecture(args):
-    if getattr(args, "max_target_positions", None) is None:
-        args.max_target_positions = getattr(
-            args, "tokens_per_sample", DEFAULT_MAX_TARGET_POSITIONS
+    if args.get("max_target_positions", None) is None:
+        args.max_target_positions = args.get("tokens_per_sample", DEFAULT_MAX_TARGET_POSITIONS
         )
-    args.embed_dim = getattr(args, "embed_dim", 768)
-    args.num_attention_heads = getattr(args, "num_attention_heads", 12)
-    args.num_layers = getattr(args, "num_layers", 12)
-    args.dropout = getattr(args, "dropout", 0.1)
-    args.attention_dropout = getattr(args, "attention_dropout", 0.1)
+    args.embed_dim = args.get("embed_dim", 768)
+    args.num_attention_heads = args.get("num_attention_heads", 12)
+    args.num_layers = args.get("num_layers", 12)
+    args.dropout = args.get("dropout", 0.1)
+    args.attention_dropout = args.get("attention_dropout", 0.1)
 
 
 @register_model_architecture("hf_gpt2", "hf_gpt2_medium")
 def hf_gpt2_medium(args):
-    args.embed_dim = getattr(args, "embed_dim", 1024)
-    args.num_attention_heads = getattr(args, "num_attention_heads", 16)
-    args.num_layers = getattr(args, "num_layers", 24)
+    args.embed_dim = args.get("embed_dim", 1024)
+    args.num_attention_heads = args.get("num_attention_heads", 16)
+    args.num_layers = args.get("num_layers", 24)
     default_architecture(args)
 
 
 @register_model_architecture("hf_gpt2", "hf_gpt2_large")
 def hf_gpt2_large(args):
-    args.embed_dim = getattr(args, "embed_dim", 1280)
-    args.num_attention_heads = getattr(args, "num_attention_heads", 20)
-    args.num_layers = getattr(args, "num_layers", 36)
+    args.embed_dim = args.get("embed_dim", 1280)
+    args.num_attention_heads = args.get("num_attention_heads", 20)
+    args.num_layers = args.get("num_layers", 36)
     default_architecture(args)
 
 
 @register_model_architecture("hf_gpt2", "hf_gpt2_xl")
 def hf_gpt2_xl(args):
-    args.embed_dim = getattr(args, "embed_dim", 1600)
-    args.num_attention_heads = getattr(args, "num_attention_heads", 25)
-    args.num_layers = getattr(args, "num_layers", 48)
+    args.embed_dim = args.get("embed_dim", 1600)
+    args.num_attention_heads = args.get("num_attention_heads", 25)
+    args.num_layers = args.get("num_layers", 48)
     default_architecture(args)

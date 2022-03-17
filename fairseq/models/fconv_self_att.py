@@ -632,43 +632,39 @@ def ConvTBC(in_channels, out_channels, kernel_size, dropout=0.0, **kwargs):
 
 @register_model_architecture("fconv_self_att", "fconv_self_att")
 def base_architecture(args):
-    args.dropout = getattr(args, "dropout", 0.1)
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 512)
-    args.encoder_layers = getattr(args, "encoder_layers", "[(512, 3)] * 3")
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 512)
-    args.decoder_layers = getattr(args, "decoder_layers", "[(512, 3)] * 8")
-    args.decoder_out_embed_dim = getattr(args, "decoder_out_embed_dim", 256)
-    args.decoder_attention = getattr(args, "decoder_attention", "True")
-    args.self_attention = getattr(args, "self_attention", "False")
-    args.encoder_attention = getattr(args, "encoder_attention", "False")
-    args.multihead_attention_nheads = getattr(args, "multihead_attention_nheads", 1)
-    args.multihead_self_attention_nheads = getattr(
-        args, "multihead_self_attention_nheads", 1
+    args.dropout = args.get("dropout", 0.1)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 512)
+    args.encoder_layers = args.get("encoder_layers", "[(512, 3)] * 3")
+    args.decoder_embed_dim = args.get("decoder_embed_dim", 512)
+    args.decoder_layers = args.get("decoder_layers", "[(512, 3)] * 8")
+    args.decoder_out_embed_dim = args.get("decoder_out_embed_dim", 256)
+    args.decoder_attention = args.get("decoder_attention", "True")
+    args.self_attention = args.get("self_attention", "False")
+    args.encoder_attention = args.get("encoder_attention", "False")
+    args.multihead_attention_nheads = args.get("multihead_attention_nheads", 1)
+    args.multihead_self_attention_nheads = args.get("multihead_self_attention_nheads", 1
     )
-    args.encoder_attention_nheads = getattr(args, "encoder_attention_nheads", 1)
-    args.project_input = getattr(args, "project_input", "False")
-    args.gated_attention = getattr(args, "gated_attention", "False")
-    args.downsample = getattr(args, "downsample", "False")
-    args.pretrained_checkpoint = getattr(args, "pretrained_checkpoint", "")
-    args.pretrained = getattr(args, "pretrained", "False")
+    args.encoder_attention_nheads = args.get("encoder_attention_nheads", 1)
+    args.project_input = args.get("project_input", "False")
+    args.gated_attention = args.get("gated_attention", "False")
+    args.downsample = args.get("downsample", "False")
+    args.pretrained_checkpoint = args.get("pretrained_checkpoint", "")
+    args.pretrained = args.get("pretrained", "False")
 
 
 @register_model_architecture("fconv_self_att", "fconv_self_att_wp")
 def fconv_self_att_wp(args):
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 256)
-    args.encoder_layers = getattr(
-        args, "encoder_layers", "[(128, 3)] * 2 + [(512,3)] * 1"
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 256)
+    args.encoder_layers = args.get("encoder_layers", "[(128, 3)] * 2 + [(512,3)] * 1"
     )
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 256)
-    args.decoder_layers = getattr(
-        args, "decoder_layers", "[(512, 4)] * 4 + [(768, 4)] * 2 + [(1024, 4)] * 1"
+    args.decoder_embed_dim = args.get("decoder_embed_dim", 256)
+    args.decoder_layers = args.get("decoder_layers", "[(512, 4)] * 4 + [(768, 4)] * 2 + [(1024, 4)] * 1"
     )
-    args.decoder_out_embed_dim = getattr(args, "decoder_out_embed_dim", 256)
-    args.self_attention = getattr(args, "self_attention", "True")
-    args.multihead_self_attention_nheads = getattr(
-        args, "multihead_self_attention_nheads", 4
+    args.decoder_out_embed_dim = args.get("decoder_out_embed_dim", 256)
+    args.self_attention = args.get("self_attention", "True")
+    args.multihead_self_attention_nheads = args.get("multihead_self_attention_nheads", 4
     )
-    args.project_input = getattr(args, "project_input", "True")
-    args.gated_attention = getattr(args, "gated_attention", "True")
-    args.downsample = getattr(args, "downsample", "True")
+    args.project_input = args.get("project_input", "True")
+    args.gated_attention = args.get("gated_attention", "True")
+    args.downsample = args.get("downsample", "True")
     base_architecture(args)

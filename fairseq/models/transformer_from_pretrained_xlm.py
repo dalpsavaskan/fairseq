@@ -56,8 +56,8 @@ class TransformerFromPretrainedXLMModel(TransformerModel):
             "translation_from_pretrained_xlm"
         )
         assert not (
-            getattr(args, "init_encoder_only", False)
-            and getattr(args, "init_decoder_only", False)
+            args.get("init_encoder_only", False)
+            and args.get("init_decoder_only", False)
         ), "Only one of --init-encoder-only and --init-decoder-only can be set."
         return super().build_model(args, task)
 
@@ -112,7 +112,7 @@ def upgrade_state_dict_with_xlm_weights(
 class TransformerEncoderFromPretrainedXLM(TransformerEncoder):
     def __init__(self, args, dictionary, embed_tokens):
         super().__init__(args, dictionary, embed_tokens)
-        if getattr(args, "init_decoder_only", False):
+        if args.get("init_decoder_only", False):
             # Don't load XLM weights for encoder if --init-decoder-only
             return
 
@@ -130,7 +130,7 @@ class TransformerEncoderFromPretrainedXLM(TransformerEncoder):
 class TransformerDecoderFromPretrainedXLM(TransformerDecoder):
     def __init__(self, args, dictionary, embed_tokens, no_encoder_attn=False):
         super().__init__(args, dictionary, embed_tokens, no_encoder_attn)
-        if getattr(args, "init_encoder_only", False):
+        if args.get("init_encoder_only", False):
             # Don't load XLM weights for decoder if --init-encoder-only
             return
         assert hasattr(args, "pretrained_xlm_checkpoint"), (

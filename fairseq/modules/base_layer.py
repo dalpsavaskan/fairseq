@@ -124,7 +124,7 @@ class BaseSublayer(nn.Module):
     def __init__(self, args):
         super().__init__()
         self.activation_fn = utils.get_activation_fn(
-            activation=getattr(args, "activation_fn", "relu") or "relu"
+            activation=args.get("activation_fn", "relu") or "relu"
         )
         self.norm = LayerNorm(args.decoder_embed_dim, export=False)
         self.ff1 = torch.nn.Linear(args.decoder_embed_dim, args.decoder_ffn_embed_dim)

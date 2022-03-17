@@ -212,7 +212,7 @@ class Trainer(object):
         """Indicates whether to save checkpoints on the current DDP rank."""
         if (
             self.is_fsdp and self.cfg.distributed_training.use_sharded_state
-        ) or getattr(self.cfg.model, "base_layers", 0) > 0:
+        ) or self.cfg.model.get("base_layers", 0) > 0:
             return True
         else:
             return self.is_data_parallel_master
@@ -470,7 +470,7 @@ class Trainer(object):
                 or self.tpu
                 # FSDP requires loading checkpoint shards on all ranks
                 or (self.is_fsdp and self.cfg.distributed_training.use_sharded_state)
-                or getattr(self.cfg.model, "base_layers", 0) > 0
+                or self.cfg.model.get("base_layers", 0) > 0
             )
 
             if load_on_all_ranks or self.data_parallel_rank == 0:
@@ -789,7 +789,7 @@ class Trainer(object):
         # and task.uses_ema is True, pass the EMA model as a keyword
         # argument to the task.
         extra_kwargs = {}
-        if self.cfg.ema.store_ema and getattr(self.task, "uses_ema", False):
+        if self.cfg.ema.store_ema and self.task.get("uses_ema", False):
             extra_kwargs["ema_model"] = self.ema.get_model()
 
         # forward and backward pass
@@ -1107,7 +1107,7 @@ class Trainer(object):
         # and task.uses_ema is True, pass the EMA model as a keyword
         # argument to the task.
         extra_kwargs = {}
-        if self.cfg.ema.store_ema and getattr(self.task, "uses_ema", False):
+        if self.cfg.ema.store_ema and self.task.get("uses_ema", False):
             extra_kwargs["ema_model"] = self.ema.get_model()
 
         with torch.no_grad():
@@ -1397,7 +1397,7 @@ class Trainer(object):
             zip(
                 *distributed_utils.all_gather_list(
                     [logging_outputs] + list(extra_stats_to_sum),
-                    max_size=getattr(self.cfg.common, "all_gather_list_size", 16384),
+                    max_size=self.cfg.common.get("all_gather_list_size", 16384),
                     group=self.data_parallel_process_group,
                 )
             )

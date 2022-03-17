@@ -94,12 +94,12 @@ class FConvLanguageModel(FairseqLanguageModel):
 
 @register_model_architecture("fconv_lm", "fconv_lm")
 def base_lm_architecture(args):
-    args.dropout = getattr(args, "dropout", 0.1)
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 128)
-    args.decoder_layers = getattr(args, "decoder_layers", "[(1268, 4)] * 13")
-    args.decoder_attention = getattr(args, "decoder_attention", "False")
-    args.adaptive_softmax_cutoff = getattr(args, "adaptive_softmax_cutoff", None)
-    args.adaptive_softmax_dropout = getattr(args, "adaptive_softmax_dropout", 0)
+    args.dropout = args.get("dropout", 0.1)
+    args.decoder_embed_dim = args.get("decoder_embed_dim", 128)
+    args.decoder_layers = args.get("decoder_layers", "[(1268, 4)] * 13")
+    args.decoder_attention = args.get("decoder_attention", "False")
+    args.adaptive_softmax_cutoff = args.get("adaptive_softmax_cutoff", None)
+    args.adaptive_softmax_dropout = args.get("adaptive_softmax_dropout", 0)
 
 
 @register_model_architecture("fconv_lm", "fconv_lm_dauphin_wikitext103")
@@ -111,11 +111,10 @@ def fconv_lm_dauphin_wikitext103(args):
     layers += " + [(850, 4)] * 3"
     layers += " + [(1024, 4)] * 1"
     layers += " + [(2048, 4)] * 1"
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 280)
-    args.decoder_layers = getattr(args, "decoder_layers", layers)
-    args.decoder_attention = getattr(args, "decoder_attention", "False")
-    args.adaptive_softmax_cutoff = getattr(
-        args, "adaptive_softmax_cutoff", "10000,20000,200000"
+    args.decoder_embed_dim = args.get("decoder_embed_dim", 280)
+    args.decoder_layers = args.get("decoder_layers", layers)
+    args.decoder_attention = args.get("decoder_attention", "False")
+    args.adaptive_softmax_cutoff = args.get("adaptive_softmax_cutoff", "10000,20000,200000"
     )
     base_lm_architecture(args)
 
@@ -127,10 +126,9 @@ def fconv_lm_dauphin_gbw(args):
     layers += " + [(512, 1, 0), (512, 5, 0), (1024, 1, 3)] * 3"
     layers += " + [(1024, 1, 0), (1024, 5, 0), (2048, 1, 3)] * 6"
     layers += " + [(1024, 1, 0), (1024, 5, 0), (4096, 1, 3)]"
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 128)
-    args.decoder_layers = getattr(args, "decoder_layers", layers)
-    args.decoder_attention = getattr(args, "decoder_attention", "False")
-    args.adaptive_softmax_cutoff = getattr(
-        args, "adaptive_softmax_cutoff", "10000,50000,200000"
+    args.decoder_embed_dim = args.get("decoder_embed_dim", 128)
+    args.decoder_layers = args.get("decoder_layers", layers)
+    args.decoder_attention = args.get("decoder_attention", "False")
+    args.adaptive_softmax_cutoff = args.get("adaptive_softmax_cutoff", "10000,50000,200000"
     )
     base_lm_architecture(args)

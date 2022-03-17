@@ -131,7 +131,7 @@ class BerardModel(FairseqEncoderDecoderModel):
             lstm_size=args.lstm_size,
             dropout=args.dropout,
         )
-        if getattr(args, "load_pretrained_encoder_from", None):
+        if args.get("load_pretrained_encoder_from", None):
             encoder = checkpoint_utils.load_pretrained_component_from_model(
                 component=encoder, checkpoint=args.load_pretrained_encoder_from
             )
@@ -149,7 +149,7 @@ class BerardModel(FairseqEncoderDecoderModel):
             attention_dim=args.attention_dim,
             output_layer_dim=args.output_layer_dim,
         )
-        if getattr(args, "load_pretrained_decoder_from", None):
+        if args.get("load_pretrained_decoder_from", None):
             decoder = checkpoint_utils.load_pretrained_component_from_model(
                 component=decoder, checkpoint=args.load_pretrained_decoder_from
             )
@@ -548,21 +548,19 @@ def berard(args):
     """The original version: "End-to-End Automatic Speech Translation of
     Audiobooks" (https://arxiv.org/abs/1802.04200)
     """
-    args.input_layers = getattr(args, "input_layers", "[256, 128]")
-    args.conv_layers = getattr(args, "conv_layers", "[(16, 3, 2), (16, 3, 2)]")
-    args.num_blstm_layers = getattr(args, "num_blstm_layers", 3)
-    args.lstm_size = getattr(args, "lstm_size", 256)
-    args.dropout = getattr(args, "dropout", 0.2)
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 128)
-    args.decoder_num_layers = getattr(args, "decoder_num_layers", 2)
-    args.decoder_hidden_dim = getattr(args, "decoder_hidden_dim", 512)
-    args.attention_dim = getattr(args, "attention_dim", 512)
-    args.output_layer_dim = getattr(args, "output_layer_dim", 128)
-    args.load_pretrained_encoder_from = getattr(
-        args, "load_pretrained_encoder_from", None
+    args.input_layers = args.get("input_layers", "[256, 128]")
+    args.conv_layers = args.get("conv_layers", "[(16, 3, 2), (16, 3, 2)]")
+    args.num_blstm_layers = args.get("num_blstm_layers", 3)
+    args.lstm_size = args.get("lstm_size", 256)
+    args.dropout = args.get("dropout", 0.2)
+    args.decoder_embed_dim = args.get("decoder_embed_dim", 128)
+    args.decoder_num_layers = args.get("decoder_num_layers", 2)
+    args.decoder_hidden_dim = args.get("decoder_hidden_dim", 512)
+    args.attention_dim = args.get("attention_dim", 512)
+    args.output_layer_dim = args.get("output_layer_dim", 128)
+    args.load_pretrained_encoder_from = args.get("load_pretrained_encoder_from", None
     )
-    args.load_pretrained_decoder_from = getattr(
-        args, "load_pretrained_decoder_from", None
+    args.load_pretrained_decoder_from = args.get("load_pretrained_decoder_from", None
     )
 
 
@@ -576,31 +574,31 @@ def berard_256_3_3(args):
     * "Self-Supervised Representations Improve End-to-End Speech Translation"
     (https://arxiv.org/abs/2006.12124)
     """
-    args.decoder_num_layers = getattr(args, "decoder_num_layers", 3)
+    args.decoder_num_layers = args.get("decoder_num_layers", 3)
     berard(args)
 
 
 @register_model_architecture(model_name="s2t_berard", arch_name="s2t_berard_512_3_2")
 def berard_512_3_2(args):
-    args.num_blstm_layers = getattr(args, "num_blstm_layers", 3)
-    args.lstm_size = getattr(args, "lstm_size", 512)
-    args.dropout = getattr(args, "dropout", 0.3)
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 256)
-    args.decoder_num_layers = getattr(args, "decoder_num_layers", 2)
-    args.decoder_hidden_dim = getattr(args, "decoder_hidden_dim", 1024)
-    args.attention_dim = getattr(args, "attention_dim", 512)
-    args.output_layer_dim = getattr(args, "output_layer_dim", 256)
+    args.num_blstm_layers = args.get("num_blstm_layers", 3)
+    args.lstm_size = args.get("lstm_size", 512)
+    args.dropout = args.get("dropout", 0.3)
+    args.decoder_embed_dim = args.get("decoder_embed_dim", 256)
+    args.decoder_num_layers = args.get("decoder_num_layers", 2)
+    args.decoder_hidden_dim = args.get("decoder_hidden_dim", 1024)
+    args.attention_dim = args.get("attention_dim", 512)
+    args.output_layer_dim = args.get("output_layer_dim", 256)
     berard(args)
 
 
 @register_model_architecture(model_name="s2t_berard", arch_name="s2t_berard_512_5_3")
 def berard_512_5_3(args):
-    args.num_blstm_layers = getattr(args, "num_blstm_layers", 5)
-    args.lstm_size = getattr(args, "lstm_size", 512)
-    args.dropout = getattr(args, "dropout", 0.3)
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 256)
-    args.decoder_num_layers = getattr(args, "decoder_num_layers", 3)
-    args.decoder_hidden_dim = getattr(args, "decoder_hidden_dim", 1024)
-    args.attention_dim = getattr(args, "attention_dim", 512)
-    args.output_layer_dim = getattr(args, "output_layer_dim", 256)
+    args.num_blstm_layers = args.get("num_blstm_layers", 5)
+    args.lstm_size = args.get("lstm_size", 512)
+    args.dropout = args.get("dropout", 0.3)
+    args.decoder_embed_dim = args.get("decoder_embed_dim", 256)
+    args.decoder_num_layers = args.get("decoder_num_layers", 3)
+    args.decoder_hidden_dim = args.get("decoder_hidden_dim", 1024)
+    args.attention_dim = args.get("attention_dim", 512)
+    args.output_layer_dim = args.get("output_layer_dim", 256)
     berard(args)

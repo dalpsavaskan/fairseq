@@ -547,7 +547,7 @@ class TestIncrementalDecoder(FairseqIncrementalDecoder):
     def __init__(self, args, dictionary):
         super().__init__(dictionary)
         assert hasattr(args, "beam_probs") or hasattr(args, "probs")
-        args.max_decoder_positions = getattr(args, "max_decoder_positions", 100)
+        args.max_decoder_positions = args.get("max_decoder_positions", 100)
         self.args = args
 
     def forward(self, prev_output_tokens, encoder_out=None, incremental_state=None):

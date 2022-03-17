@@ -125,6 +125,12 @@ class TransformerConfig(FairseqDataclass):
             "help": "share encoder, decoder and output embeddings (requires shared dictionary and embed dim)"
         },
     )
+    shared_layers: bool = field(
+        default=False,
+        metadata={
+            "help": "share layers across the encoder and the decoder (similar to ALBERT)"
+        },
+    )         
     no_token_positional_embeddings: bool = field(
         default=False,
         metadata={

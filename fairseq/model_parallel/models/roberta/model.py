@@ -70,7 +70,7 @@ class ModelParallelRobertaModel(RobertaModel):
         if not hasattr(args, "max_positions"):
             args.max_positions = args.tokens_per_sample
 
-        if getattr(args, "untie_weights_roberta", False):
+        if args.get("untie_weights_roberta", False):
             raise NotImplementedError(
                 "--untie-weights-roberta is not supported in model parallel mode"
             )
@@ -191,7 +191,7 @@ class ModelParallelRobertaEncoder(RobertaEncoder):
 
 @register_model_architecture("model_parallel_roberta", "model_parallel_roberta")
 def base_architecture(args):
-    args.no_final_layer_norm = getattr(args, "no_final_layer_norm", False)
+    args.no_final_layer_norm = args.get("no_final_layer_norm", False)
     # model parallel RoBERTa defaults to "Pre-LN" formulation
     roberta_prenorm_architecture(args)
 
@@ -199,7 +199,7 @@ def base_architecture(args):
 # earlier versions of model parallel RoBERTa removed the final layer norm
 @register_model_architecture("model_parallel_roberta", "model_parallel_roberta_v1")
 def model_parallel_roberta_v1_architecture(args):
-    args.no_final_layer_norm = getattr(args, "no_final_layer_norm", True)
+    args.no_final_layer_norm = args.get("no_final_layer_norm", True)
     base_architecture(args)
 
 
@@ -218,8 +218,8 @@ def model_parallel_roberta_base_architecture(args):
 
 @register_model_architecture("model_parallel_roberta", "model_parallel_roberta_large")
 def model_parallel_roberta_large_architecture(args):
-    args.encoder_layers = getattr(args, "encoder_layers", 24)
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 1024)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 4096)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 16)
+    args.encoder_layers = args.get("encoder_layers", 24)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 1024)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 4096)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 16)
     base_architecture(args)

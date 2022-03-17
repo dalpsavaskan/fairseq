@@ -113,7 +113,7 @@ def get_iterator(args):
         root = lines.pop(0).strip()
         files = [osp.join(root, line.split("\t")[0]) for line in lines if len(line) > 0]
 
-        if getattr(args, "sample_pct", 0) > 0:
+        if args.get("sample_pct", 0) > 0:
             files = random.sample(files, int(args.sample_pct * len(files)))
         num = len(files)
         reader = Wav2VecFeatureReader(args.checkpoint, args.layer)

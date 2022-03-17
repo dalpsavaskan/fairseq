@@ -208,22 +208,22 @@ class MultilingualTransformerModel(FairseqMultiModel):
 @register_model_architecture("multilingual_transformer", "multilingual_transformer")
 def base_multilingual_architecture(args):
     base_architecture(args)
-    args.share_encoder_embeddings = getattr(args, "share_encoder_embeddings", False)
-    args.share_decoder_embeddings = getattr(args, "share_decoder_embeddings", False)
-    args.share_encoders = getattr(args, "share_encoders", False)
-    args.share_decoders = getattr(args, "share_decoders", False)
+    args.share_encoder_embeddings = args.get("share_encoder_embeddings", False)
+    args.share_decoder_embeddings = args.get("share_decoder_embeddings", False)
+    args.share_encoders = args.get("share_encoders", False)
+    args.share_decoders = args.get("share_decoders", False)
 
 
 @register_model_architecture(
     "multilingual_transformer", "multilingual_transformer_iwslt_de_en"
 )
 def multilingual_transformer_iwslt_de_en(args):
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 512)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 1024)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 4)
-    args.encoder_layers = getattr(args, "encoder_layers", 6)
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 512)
-    args.decoder_ffn_embed_dim = getattr(args, "decoder_ffn_embed_dim", 1024)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 4)
-    args.decoder_layers = getattr(args, "decoder_layers", 6)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 512)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 1024)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 4)
+    args.encoder_layers = args.get("encoder_layers", 6)
+    args.decoder_embed_dim = args.get("decoder_embed_dim", 512)
+    args.decoder_ffn_embed_dim = args.get("decoder_ffn_embed_dim", 1024)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 4)
+    args.decoder_layers = args.get("decoder_layers", 6)
     base_multilingual_architecture(args)

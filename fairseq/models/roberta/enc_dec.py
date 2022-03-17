@@ -100,7 +100,7 @@ class RobertaEncDecModel(FairseqEncoderDecoderModel):
             no_encoder_attn=False,
             output_projection=lm_head,
         )
-        if getattr(args, "pretrained_decoder", False):
+        if args.get("pretrained_decoder", False):
             decoder_dict = encoder.state_dict()
 
             # TODO: hide setting "encoder_attn" layers behind a flag.
@@ -155,8 +155,8 @@ class RobertaEncDecModel(FairseqEncoderDecoderModel):
         for k1, k2 in attr_map:
             setattr(args, k2, getattr(roberta_args, k1))
 
-        args.adaptive_softmax_cutoff = getattr(args, "adaptive_softmax_cutoff", None)
-        args.adaptive_softmax_dropout = getattr(args, "adaptive_softmax_dropout", 0)
+        args.adaptive_softmax_cutoff = args.get("adaptive_softmax_cutoff", None)
+        args.adaptive_softmax_dropout = args.get("adaptive_softmax_dropout", 0)
         args.share_decoder_input_output_embed = not roberta_args.untie_weights_roberta
         return args
 
@@ -181,12 +181,11 @@ class RobertaEncDecModel(FairseqEncoderDecoderModel):
 
 @register_model_architecture("roberta_enc_dec", "roberta_enc_dec")
 def base_enc_dec_architecture(args):
-    args.hack_layernorm_embedding = getattr(args, "hack_layernorm_embedding", False)
-    args.pretrained_mlm_checkpoint = getattr(args, "pretrained_mlm_checkpoint", None)
-    args.pretrained_decoder = getattr(args, "pretrained_decoder", None)
-    args.share_all_embeddings = getattr(args, "share_all_embeddings", False)
-    args.share_decoder_input_output_embed = getattr(
-        args, "share_decoder_input_output_embed", False
+    args.hack_layernorm_embedding = args.get("hack_layernorm_embedding", False)
+    args.pretrained_mlm_checkpoint = args.get("pretrained_mlm_checkpoint", None)
+    args.pretrained_decoder = args.get("pretrained_decoder", None)
+    args.share_all_embeddings = args.get("share_all_embeddings", False)
+    args.share_decoder_input_output_embed = args.get("share_decoder_input_output_embed", False
     )
 
     roberta.base_architecture(args)

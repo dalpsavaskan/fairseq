@@ -268,7 +268,7 @@ def main(args, task=None, model_state=None):
     gen_timer = StopwatchMeter()
 
     def build_generator(args):
-        w2l_decoder = getattr(args, "w2l_decoder", None)
+        w2l_decoder = args.get("w2l_decoder", None)
         if w2l_decoder == "viterbi":
             from examples.speech_recognition.w2l_decoder import W2lViterbiDecoder
 

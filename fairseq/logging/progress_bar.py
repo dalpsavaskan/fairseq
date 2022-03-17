@@ -86,10 +86,10 @@ def build_progress_bar(
     no_progress_bar: str = "none",
 ):
     """Legacy wrapper that takes an argparse.Namespace."""
-    if getattr(args, "no_progress_bar", False):
+    if args.get("no_progress_bar", False):
         default = no_progress_bar
-    if getattr(args, "distributed_rank", 0) == 0:
-        tensorboard_logdir = getattr(args, "tensorboard_logdir", None)
+    if args.get("distributed_rank", 0) == 0:
+        tensorboard_logdir = args.get("tensorboard_logdir", None)
     else:
         tensorboard_logdir = None
     return progress_bar(

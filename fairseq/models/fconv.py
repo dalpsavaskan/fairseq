@@ -698,31 +698,31 @@ def ConvTBC(in_channels, out_channels, kernel_size, dropout=0.0, **kwargs):
 
 @register_model_architecture("fconv", "fconv")
 def base_architecture(args):
-    args.dropout = getattr(args, "dropout", 0.1)
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 512)
-    args.encoder_embed_path = getattr(args, "encoder_embed_path", None)
-    args.encoder_layers = getattr(args, "encoder_layers", "[(512, 3)] * 20")
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 512)
-    args.decoder_embed_path = getattr(args, "decoder_embed_path", None)
-    args.decoder_layers = getattr(args, "decoder_layers", "[(512, 3)] * 20")
-    args.decoder_out_embed_dim = getattr(args, "decoder_out_embed_dim", 256)
-    args.decoder_attention = getattr(args, "decoder_attention", "True")
-    args.share_input_output_embed = getattr(args, "share_input_output_embed", False)
+    args.dropout = args.get("dropout", 0.1)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 512)
+    args.encoder_embed_path = args.get("encoder_embed_path", None)
+    args.encoder_layers = args.get("encoder_layers", "[(512, 3)] * 20")
+    args.decoder_embed_dim = args.get("decoder_embed_dim", 512)
+    args.decoder_embed_path = args.get("decoder_embed_path", None)
+    args.decoder_layers = args.get("decoder_layers", "[(512, 3)] * 20")
+    args.decoder_out_embed_dim = args.get("decoder_out_embed_dim", 256)
+    args.decoder_attention = args.get("decoder_attention", "True")
+    args.share_input_output_embed = args.get("share_input_output_embed", False)
 
 
 @register_model_architecture("fconv", "fconv_iwslt_de_en")
 def fconv_iwslt_de_en(args):
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 256)
-    args.encoder_layers = getattr(args, "encoder_layers", "[(256, 3)] * 4")
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 256)
-    args.decoder_layers = getattr(args, "decoder_layers", "[(256, 3)] * 3")
-    args.decoder_out_embed_dim = getattr(args, "decoder_out_embed_dim", 256)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 256)
+    args.encoder_layers = args.get("encoder_layers", "[(256, 3)] * 4")
+    args.decoder_embed_dim = args.get("decoder_embed_dim", 256)
+    args.decoder_layers = args.get("decoder_layers", "[(256, 3)] * 3")
+    args.decoder_out_embed_dim = args.get("decoder_out_embed_dim", 256)
     base_architecture(args)
 
 
 @register_model_architecture("fconv", "fconv_wmt_en_ro")
 def fconv_wmt_en_ro(args):
-    args.decoder_out_embed_dim = getattr(args, "decoder_out_embed_dim", 512)
+    args.decoder_out_embed_dim = args.get("decoder_out_embed_dim", 512)
     base_architecture(args)
 
 
@@ -732,11 +732,11 @@ def fconv_wmt_en_de(args):
     convs += " + [(1024, 3)] * 4"  # next 4 layers have 1024 units
     convs += " + [(2048, 1)] * 2"  # final 2 layers use 1x1 convolutions
 
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 768)
-    args.encoder_layers = getattr(args, "encoder_layers", convs)
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 768)
-    args.decoder_layers = getattr(args, "decoder_layers", convs)
-    args.decoder_out_embed_dim = getattr(args, "decoder_out_embed_dim", 512)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 768)
+    args.encoder_layers = args.get("encoder_layers", convs)
+    args.decoder_embed_dim = args.get("decoder_embed_dim", 768)
+    args.decoder_layers = args.get("decoder_layers", convs)
+    args.decoder_out_embed_dim = args.get("decoder_out_embed_dim", 512)
     base_architecture(args)
 
 
@@ -748,9 +748,9 @@ def fconv_wmt_en_fr(args):
     convs += " + [(2048, 1)] * 1"  # next 1 layer uses 1x1 convolutions
     convs += " + [(4096, 1)] * 1"  # final 1 layer uses 1x1 convolutions
 
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 768)
-    args.encoder_layers = getattr(args, "encoder_layers", convs)
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 768)
-    args.decoder_layers = getattr(args, "decoder_layers", convs)
-    args.decoder_out_embed_dim = getattr(args, "decoder_out_embed_dim", 512)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 768)
+    args.encoder_layers = args.get("encoder_layers", convs)
+    args.decoder_embed_dim = args.get("decoder_embed_dim", 768)
+    args.decoder_layers = args.get("decoder_layers", convs)
+    args.decoder_out_embed_dim = args.get("decoder_out_embed_dim", 512)
     base_architecture(args)

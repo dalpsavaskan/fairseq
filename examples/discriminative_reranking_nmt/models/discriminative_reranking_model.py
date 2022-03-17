@@ -97,7 +97,7 @@ class BertRanker(BaseRanker):
     def __init__(self, args, task):
         super(BertRanker, self).__init__(args, task)
 
-        init_model = getattr(args, "pretrained_model", "")
+        init_model = args.get("pretrained_model", "")
         self.joint_layers = nn.ModuleList()
         if os.path.isfile(init_model):
             print(f"initialize weight from {init_model}")
@@ -118,8 +118,7 @@ class BertRanker(BaseRanker):
             self.model = TransformerSentenceEncoder(
                 padding_idx=task.dictionary.pad(),
                 vocab_size=len(task.dictionary),
-                num_encoder_layers=getattr(
-                    args, "encoder_layers", init_args.encoder_layers
+                num_encoder_layers=args.get("encoder_layers", init_args.encoder_layers
                 ),
                 embedding_dim=init_args.encoder_embed_dim,
                 ffn_embedding_dim=init_args.encoder_ffn_embed_dim,
@@ -155,8 +154,7 @@ class BertRanker(BaseRanker):
             activation_dropout = init_args.activation_dropout
             activation_fn = init_args.activation_fn
 
-            classifier_embed_dim = getattr(
-                args, "embed_dim", init_args.encoder_embed_dim
+            classifier_embed_dim = args.get("embed_dim", init_args.encoder_embed_dim
             )
             if classifier_embed_dim != init_args.encoder_embed_dim:
                 self.transform_layer = nn.Linear(

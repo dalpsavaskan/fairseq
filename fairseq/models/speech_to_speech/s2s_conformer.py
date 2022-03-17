@@ -83,7 +83,7 @@ class S2UTConformerModel(S2UTTransformerModel):
         args.input_channels = data_cfg.input_transformed_channels
 
         encoder = S2SConformerEncoder(args)
-        pretraining_path = getattr(args, "load_pretrained_encoder_from", None)
+        pretraining_path = args.get("load_pretrained_encoder_from", None)
         if pretraining_path is not None:
             if not Path(pretraining_path).exists():
                 logger.warning(
@@ -99,13 +99,13 @@ class S2UTConformerModel(S2UTTransformerModel):
 
 @register_model_architecture("s2ut_conformer", "s2ut_conformer")
 def s2ut_base_architecture(args):
-    args.attn_type = getattr(args, "attn_type", None)
-    args.pos_enc_type = getattr(args, "pos_enc_type", "abs")
-    args.max_source_positions = getattr(args, "max_source_positions", 6000)
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 256)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 2048)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 4)
-    args.dropout = getattr(args, "dropout", 0.1)
-    args.encoder_layers = getattr(args, "encoder_layers", 16)
-    args.depthwise_conv_kernel_size = getattr(args, "depthwise_conv_kernel_size", 31)
+    args.attn_type = args.get("attn_type", None)
+    args.pos_enc_type = args.get("pos_enc_type", "abs")
+    args.max_source_positions = args.get("max_source_positions", 6000)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 256)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 2048)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 4)
+    args.dropout = args.get("dropout", 0.1)
+    args.encoder_layers = args.get("encoder_layers", 16)
+    args.depthwise_conv_kernel_size = args.get("depthwise_conv_kernel_size", 31)
     s2ut_transformer_architecture_base(args)

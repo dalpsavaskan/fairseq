@@ -409,12 +409,12 @@ class DualInputXMTransformerModel(DualInputS2TTransformerModel):
         )
         text_encoder = TransformerEncoder(_args, task.src_dict, enc_emb)
         spch_encoder = Wav2VecEncoderWithAdaptor(args)
-        if getattr(args, "load_pretrained_mbart_from", None):
+        if args.get("load_pretrained_mbart_from", None):
             text_encoder = checkpoint_utils.load_pretrained_component_from_model(
                 component=text_encoder, checkpoint=args.load_pretrained_mbart_from
             )
-        if getattr(args, "stack_w2v_mbart_encoder", False):
-            assert getattr(args, "share_w2v_text_encoder", False) is False
+        if args.get("stack_w2v_mbart_encoder", False):
+            assert args.get("share_w2v_text_encoder", False) is False
             spch_encoder = StackedWav2VecEncoderWithAdaptor(
                 spch_encoder.w2v_encoder,
                 text_encoder.layers,
@@ -422,7 +422,7 @@ class DualInputXMTransformerModel(DualInputS2TTransformerModel):
                 spch_encoder.adaptor,
                 args.drop_w2v_layers,
             )
-        elif getattr(args, "stack_w2v_mbart_nonorm_encoder", False):
+        elif args.get("stack_w2v_mbart_nonorm_encoder", False):
             text_encoder.layer_norm = None
             spch_encoder = StackedWav2VecEncoderWithAdaptor(
                 spch_encoder.w2v_encoder,
@@ -431,7 +431,7 @@ class DualInputXMTransformerModel(DualInputS2TTransformerModel):
                 spch_encoder.adaptor,
                 args.drop_w2v_layers,
             )
-        elif getattr(args, "share_w2v_text_encoder", False):
+        elif args.get("share_w2v_text_encoder", False):
             spch_encoder = SharedEncoder(
                 spch_encoder.w2v_encoder,
                 text_encoder,
@@ -458,7 +458,7 @@ class DualInputXMTransformerModel(DualInputS2TTransformerModel):
             else:
                 p.requires_grad = False
         cross_attentive_loss_before_last_layer = (
-            0 if getattr(args, "attentive_cost_regularization", 0.0) > 0.0 else -1
+            0 if args.get("attentive_cost_regularization", 0.0) > 0.0 else -1
         )
         encoder = DualInputEncoder(
             args,
@@ -480,11 +480,11 @@ class DualInputXMTransformerModel(DualInputS2TTransformerModel):
             len(task.tgt_dict), _args.encoder_embed_dim, task.tgt_dict.pad()
         )
         decoder = TransformerDecoder(_args, task.tgt_dict, dec_emb)
-        if getattr(args, "load_pretrained_mbart_from", None):
+        if args.get("load_pretrained_mbart_from", None):
             decoder = checkpoint_utils.load_pretrained_component_from_model(
                 component=decoder, checkpoint=args.load_pretrained_mbart_from
             )
-        if getattr(args, "no_final_norm_decoder", False):
+        if args.get("no_final_norm_decoder", False):
             decoder.layer_norm = None
         for k, p in decoder.named_parameters():
             # Freeze pretrained models by default
@@ -498,13 +498,12 @@ class DualInputXMTransformerModel(DualInputS2TTransformerModel):
                 p.requires_grad = False
 
         compute_cross_attentive_loss = (
-            True if getattr(args, "attentive_cost_regularization", 0.0) > 0.0 else False
+            True if args.get("attentive_cost_regularization", 0.0) > 0.0 else False
         )
-        cross_attentive_loss_without_norm = getattr(
-            args, "attentive_cost_without_normalize", False
+        cross_attentive_loss_without_norm = args.get("attentive_cost_without_normalize", False
         )
         cross_attentive_loss_reverse = (
-            False  # getattr(args, "attentive_cost_reverse", False)
+            False  # args.get("attentive_cost_reverse", False)
         )
         decoder = TransformerMultiInputDecoder(
             dictionary=task.target_dictionary,
@@ -537,48 +536,44 @@ def dualinputxmtransformer_base(args):
     set_default_adaptor_args(args)
 
     # mbart model
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 1024)
-    args.encoder_ffn_embed_dim = getattr(
-        args, "encoder_ffn_embed_dim", 4 * args.encoder_embed_dim
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 1024)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 4 * args.encoder_embed_dim
     )
-    args.encoder_layers = getattr(args, "encoder_layers", 12)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 16)
-    args.encoder_normalize_before = getattr(args, "encoder_normalize_before", True)
-    args.encoder_layerdrop = getattr(args, "encoder_layerdrop", 0)
-    args.encoder_learned_pos = getattr(args, "encoder_learned_pos", True)
+    args.encoder_layers = args.get("encoder_layers", 12)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 16)
+    args.encoder_normalize_before = args.get("encoder_normalize_before", True)
+    args.encoder_layerdrop = args.get("encoder_layerdrop", 0)
+    args.encoder_learned_pos = args.get("encoder_learned_pos", True)
 
-    args.decoder_embed_path = getattr(args, "decoder_embed_path", None)
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 1024)
-    args.decoder_ffn_embed_dim = getattr(args, "decoder_ffn_embed_dim", 4 * 1024)
-    args.decoder_layers = getattr(args, "decoder_layers", 12)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 16)
-    args.decoder_normalize_before = getattr(args, "decoder_normalize_before", True)
-    args.decoder_learned_pos = getattr(args, "decoder_learned_pos", True)
-    args.decoder_layerdrop = getattr(args, "decoder_layerdrop", 0.0)
+    args.decoder_embed_path = args.get("decoder_embed_path", None)
+    args.decoder_embed_dim = args.get("decoder_embed_dim", 1024)
+    args.decoder_ffn_embed_dim = args.get("decoder_ffn_embed_dim", 4 * 1024)
+    args.decoder_layers = args.get("decoder_layers", 12)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 16)
+    args.decoder_normalize_before = args.get("decoder_normalize_before", True)
+    args.decoder_learned_pos = args.get("decoder_learned_pos", True)
+    args.decoder_layerdrop = args.get("decoder_layerdrop", 0.0)
 
-    args.adaptive_input = getattr(args, "adaptive_input", False)
+    args.adaptive_input = args.get("adaptive_input", False)
 
-    args.mbart_attention_dropout = getattr(args, "mbart_attention_dropout", 0.0)
-    args.mbart_activation_dropout = getattr(args, "mbart_activation_dropout", 0.0)
-    args.mbart_dropout = getattr(args, "mbart_dropout", 0.1)
-    args.adaptive_softmax_cutoff = getattr(args, "adaptive_softmax_cutoff", None)
-    args.adaptive_softmax_dropout = getattr(args, "adaptive_softmax_dropout", 0)
-    args.share_decoder_input_output_embed = getattr(
-        args, "share_decoder_input_output_embed", True
+    args.mbart_attention_dropout = args.get("mbart_attention_dropout", 0.0)
+    args.mbart_activation_dropout = args.get("mbart_activation_dropout", 0.0)
+    args.mbart_dropout = args.get("mbart_dropout", 0.1)
+    args.adaptive_softmax_cutoff = args.get("adaptive_softmax_cutoff", None)
+    args.adaptive_softmax_dropout = args.get("adaptive_softmax_dropout", 0)
+    args.share_decoder_input_output_embed = args.get("share_decoder_input_output_embed", True
     )
-    args.no_token_positional_embeddings = getattr(
-        args, "no_token_positional_embeddings", False
+    args.no_token_positional_embeddings = args.get("no_token_positional_embeddings", False
     )
 
-    args.decoder_output_dim = getattr(
-        args, "decoder_output_dim", args.decoder_embed_dim
+    args.decoder_output_dim = args.get("decoder_output_dim", args.decoder_embed_dim
     )
-    args.decoder_input_dim = getattr(args, "decoder_input_dim", args.decoder_embed_dim)
+    args.decoder_input_dim = args.get("decoder_input_dim", args.decoder_embed_dim)
 
-    args.no_scale_embedding = getattr(args, "no_scale_embedding", False)
-    args.quant_noise_pq = getattr(args, "quant_noise_pq", 0)
-    args.layernorm_embedding = getattr(args, "layernorm_embedding", True)
+    args.no_scale_embedding = args.get("no_scale_embedding", False)
+    args.quant_noise_pq = args.get("quant_noise_pq", 0)
+    args.layernorm_embedding = args.get("layernorm_embedding", True)
 
-    args.activation_fn = getattr(args, "activation_fn", "gelu")
-    args.pooler_activation_fn = getattr(args, "pooler_activation_fn", "tanh")
-    args.pooler_dropout = getattr(args, "pooler_dropout", 0.0)
+    args.activation_fn = args.get("activation_fn", "gelu")
+    args.pooler_activation_fn = args.get("pooler_activation_fn", "tanh")
+    args.pooler_dropout = args.get("pooler_dropout", 0.0)

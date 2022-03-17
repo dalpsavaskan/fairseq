@@ -126,7 +126,7 @@ class W2lKenLMDecoder(W2lDecoder):
     def __init__(self, args, tgt_dict):
         super().__init__(args, tgt_dict)
 
-        self.unit_lm = getattr(args, "unit_lm", False)
+        self.unit_lm = args.get("unit_lm", False)
 
         if args.lexicon:
             self.lexicon = load_words(args.lexicon)
@@ -373,7 +373,7 @@ class W2lFairseqLMDecoder(W2lDecoder):
     def __init__(self, args, tgt_dict):
         super().__init__(args, tgt_dict)
 
-        self.unit_lm = getattr(args, "unit_lm", False)
+        self.unit_lm = args.get("unit_lm", False)
 
         self.lexicon = load_words(args.lexicon) if args.lexicon else None
         self.idx_to_wrd = {}

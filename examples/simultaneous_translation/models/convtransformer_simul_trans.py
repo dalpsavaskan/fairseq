@@ -56,7 +56,7 @@ class SimulConvTransformerModel(ConvTransformerModel):
 
         decoder = TransformerMonotonicDecoder(args, tgt_dict, embed_tokens)
 
-        if getattr(args, "load_pretrained_decoder_from", None):
+        if args.get("load_pretrained_decoder_from", None):
             decoder = checkpoint_utils.load_pretrained_component_from_model(
                 component=decoder, checkpoint=args.load_pretrained_decoder_from
             )
@@ -77,7 +77,7 @@ class AugmentedMemoryConvTransformerModel(SimulConvTransformerModel):
     def build_encoder(cls, args):
         encoder = SequenceEncoder(args, AugmentedMemoryConvTransformerEncoder(args))
 
-        if getattr(args, "load_pretrained_encoder_from", None) is not None:
+        if args.get("load_pretrained_encoder_from", None) is not None:
             encoder = checkpoint_utils.load_pretrained_component_from_model(
                 component=encoder, checkpoint=args.load_pretrained_encoder_from
             )
@@ -189,7 +189,7 @@ class ConvtransformerEmformer(SimulConvTransformerModel):
     @classmethod
     def build_encoder(cls, args):
         encoder = ConvTransformerEmformerEncoder(args)
-        if getattr(args, "load_pretrained_encoder_from", None):
+        if args.get("load_pretrained_encoder_from", None):
             encoder = checkpoint_utils.load_pretrained_component_from_model(
                 component=encoder, checkpoint=args.load_pretrained_encoder_from
             )

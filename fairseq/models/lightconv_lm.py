@@ -205,9 +205,9 @@ class LightConvLanguageModel(FairseqLanguageModel):
         # make sure all arguments are present in older models
         base_lm_architecture(args)
 
-        if getattr(args, "max_source_positions", None) is None:
+        if args.get("max_source_positions", None) is None:
             args.max_source_positions = args.tokens_per_sample
-        if getattr(args, "max_target_positions", None) is None:
+        if args.get("max_target_positions", None) is None:
             args.max_target_positions = args.tokens_per_sample
 
         if args.character_embeddings:
@@ -254,35 +254,33 @@ class LightConvLanguageModel(FairseqLanguageModel):
 
 @register_model_architecture("lightconv_lm", "lightconv_lm")
 def base_lm_architecture(args):
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 512)
-    args.decoder_ffn_embed_dim = getattr(args, "decoder_ffn_embed_dim", 2048)
-    args.decoder_layers = getattr(args, "decoder_layers", 6)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 8)
-    args.adaptive_softmax_cutoff = getattr(args, "adaptive_softmax_cutoff", None)
-    args.adaptive_softmax_dropout = getattr(args, "adaptive_softmax_dropout", 0)
-    args.adaptive_softmax_factor = getattr(args, "adaptive_softmax_factor", 4)
-    args.decoder_learned_pos = getattr(args, "decoder_learned_pos", False)
+    args.decoder_embed_dim = args.get("decoder_embed_dim", 512)
+    args.decoder_ffn_embed_dim = args.get("decoder_ffn_embed_dim", 2048)
+    args.decoder_layers = args.get("decoder_layers", 6)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 8)
+    args.adaptive_softmax_cutoff = args.get("adaptive_softmax_cutoff", None)
+    args.adaptive_softmax_dropout = args.get("adaptive_softmax_dropout", 0)
+    args.adaptive_softmax_factor = args.get("adaptive_softmax_factor", 4)
+    args.decoder_learned_pos = args.get("decoder_learned_pos", False)
 
-    args.character_embeddings = getattr(args, "character_embeddings", False)
+    args.character_embeddings = args.get("character_embeddings", False)
 
-    args.decoder_output_dim = getattr(
-        args, "decoder_output_dim", args.decoder_embed_dim
+    args.decoder_output_dim = args.get("decoder_output_dim", args.decoder_embed_dim
     )
-    args.decoder_input_dim = getattr(args, "decoder_input_dim", args.decoder_embed_dim)
-    args.decoder_conv_dim = getattr(args, "decoder_conv_dim", args.decoder_embed_dim)
+    args.decoder_input_dim = args.get("decoder_input_dim", args.decoder_embed_dim)
+    args.decoder_conv_dim = args.get("decoder_conv_dim", args.decoder_embed_dim)
 
     # The model training is not stable without this
     args.decoder_normalize_before = True
 
-    args.adaptive_input = getattr(args, "adaptive_input", False)
-    args.adaptive_input_factor = getattr(args, "adaptive_input_factor", 4)
-    args.adaptive_input_cutoff = getattr(args, "adaptive_input_cutoff", None)
+    args.adaptive_input = args.get("adaptive_input", False)
+    args.adaptive_input_factor = args.get("adaptive_input_factor", 4)
+    args.adaptive_input_cutoff = args.get("adaptive_input_cutoff", None)
 
-    args.tie_adaptive_weights = getattr(args, "tie_adaptive_weights", False)
-    args.tie_adaptive_proj = getattr(args, "tie_adaptive_proj", False)
+    args.tie_adaptive_weights = args.get("tie_adaptive_weights", False)
+    args.tie_adaptive_proj = args.get("tie_adaptive_proj", False)
 
-    args.decoder_kernel_size_list = getattr(
-        args, "decoder_kernel_size_list", [3, 7, 15, 31, 31, 31]
+    args.decoder_kernel_size_list = args.get("decoder_kernel_size_list", [3, 7, 15, 31, 31, 31]
     )
     if len(args.decoder_kernel_size_list) == 1:
         args.decoder_kernel_size_list = (
@@ -291,16 +289,16 @@ def base_lm_architecture(args):
     assert (
         len(args.decoder_kernel_size_list) == args.decoder_layers
     ), "decoder_kernel_size_list doesn't match decoder_layers"
-    args.decoder_glu = getattr(args, "decoder_glu", True)
-    args.input_dropout = getattr(args, "input_dropout", 0.1)
-    args.weight_dropout = getattr(args, "weight_dropout", args.attention_dropout)
+    args.decoder_glu = args.get("decoder_glu", True)
+    args.input_dropout = args.get("input_dropout", 0.1)
+    args.weight_dropout = args.get("weight_dropout", args.attention_dropout)
 
 
 @register_model_architecture("lightconv_lm", "lightconv_lm_gbw")
 def lightconv_lm_gbw(args):
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 512)
-    args.dropout = getattr(args, "dropout", 0.1)
-    args.attention_dropout = getattr(args, "attention_dropout", 0.1)
-    args.decoder_ffn_embed_dim = getattr(args, "decoder_ffn_embed_dim", 4096)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 16)
+    args.decoder_embed_dim = args.get("decoder_embed_dim", 512)
+    args.dropout = args.get("dropout", 0.1)
+    args.attention_dropout = args.get("attention_dropout", 0.1)
+    args.decoder_ffn_embed_dim = args.get("decoder_ffn_embed_dim", 4096)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 16)
     base_lm_architecture(args)

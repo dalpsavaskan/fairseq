@@ -209,7 +209,7 @@ class SpeechToSpeechTask(LegacyFairseqTask):
         self.tgt_dict = tgt_dict
         self.data_cfg = S2SDataConfig(Path(args.data) / args.config_yaml)
         self.multitask_tasks = {}
-        if getattr(args, "multitask_config_yaml", None) is not None:
+        if args.get("multitask_config_yaml", None) is not None:
             multitask_cfg = MultitaskConfig(
                 Path(args.data) / args.multitask_config_yaml
             )
@@ -247,7 +247,7 @@ class SpeechToSpeechTask(LegacyFairseqTask):
                     tgt_dict.add_symbol(str(i))
             logger.info(f"dictionary size: " f"{len(tgt_dict):,}")
 
-        if getattr(args, "train_subset", None) is not None:
+        if args.get("train_subset", None) is not None:
             if not all(s.startswith("train") for s in args.train_subset.split(",")):
                 raise ValueError('Train splits should be named like "train*".')
 
@@ -351,14 +351,14 @@ class SpeechToSpeechTask(LegacyFairseqTask):
                 )
             else:
                 assert (
-                    getattr(args, "beam", 1) == 1 and getattr(args, "nbest", 1) == 1
+                    args.get("beam", 1) == 1 and args.get("nbest", 1) == 1
                 ), "only support viterbi search for stacked units"
                 seq_generator = StackUnitSequenceGenerator(
                     self.tgt_dict,
                     self.args.target_code_size,
                 )
         else:
-            if getattr(args, "teacher_forcing", False):
+            if args.get("teacher_forcing", False):
                 from fairseq.speech_generator import (
                     TeacherForcingAutoRegressiveSpeechGenerator,
                 )

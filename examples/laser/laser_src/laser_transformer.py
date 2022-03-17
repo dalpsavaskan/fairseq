@@ -351,4 +351,4 @@ class LaserTransformerDecoder(TransformerDecoder):
 @register_model_architecture("laser_transformer", "laser_transformer")
 def base_laser_transformer_architecture(args):
     base_architecture(args)
-    args.decoder_lang_embed_dim = getattr(args, "decoder_lang_embed_dim", 0)
+    args.decoder_lang_embed_dim = args.get("decoder_lang_embed_dim", 0)

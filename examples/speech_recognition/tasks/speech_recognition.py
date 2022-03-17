@@ -124,7 +124,7 @@ class SpeechRecognitionTask(LegacyFairseqTask):
         self.datasets[split] = get_asr_dataset_from_json(data_json_path, self.tgt_dict)
 
     def build_generator(self, models, args, **unused):
-        w2l_decoder = getattr(args, "w2l_decoder", None)
+        w2l_decoder = args.get("w2l_decoder", None)
         if w2l_decoder == "viterbi":
             from examples.speech_recognition.w2l_decoder import W2lViterbiDecoder
 

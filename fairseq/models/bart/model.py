@@ -313,71 +313,87 @@ class BARTClassificationHead(nn.Module):
 
 @register_model_architecture("bart", "bart_large")
 def bart_large_architecture(args):
-    args.encoder_embed_path = getattr(args, "encoder_embed_path", None)
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 1024)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 4 * 1024)
-    args.encoder_layers = getattr(args, "encoder_layers", 12)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 16)
-    args.encoder_normalize_before = getattr(args, "encoder_normalize_before", False)
-    args.encoder_learned_pos = getattr(args, "encoder_learned_pos", True)
-    args.decoder_embed_path = getattr(args, "decoder_embed_path", None)
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", args.encoder_embed_dim)
-    args.decoder_ffn_embed_dim = getattr(
-        args, "decoder_ffn_embed_dim", args.encoder_ffn_embed_dim
-    )
-    args.decoder_layers = getattr(args, "decoder_layers", 12)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 16)
-    args.decoder_normalize_before = getattr(args, "decoder_normalize_before", False)
-    args.decoder_learned_pos = getattr(args, "decoder_learned_pos", True)
-    args.attention_dropout = getattr(args, "attention_dropout", 0.0)
-    args.relu_dropout = getattr(args, "relu_dropout", 0.0)
-    args.dropout = getattr(args, "dropout", 0.1)
-    args.max_target_positions = getattr(args, "max_target_positions", 1024)
-    args.max_source_positions = getattr(args, "max_source_positions", 1024)
-    args.adaptive_softmax_cutoff = getattr(args, "adaptive_softmax_cutoff", None)
-    args.adaptive_softmax_dropout = getattr(args, "adaptive_softmax_dropout", 0)
-    args.share_decoder_input_output_embed = getattr(
-        args, "share_decoder_input_output_embed", True
-    )
-    args.share_all_embeddings = getattr(args, "share_all_embeddings", True)
+    args.encoder_embed_path = args.get("encoder_embed_path", None)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 1024)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 4 * 1024)
+    args.encoder_layers = args.get("encoder_layers", 12)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 16)
+    args.encoder_normalize_before = args.get("encoder_normalize_before", False)
+    args.encoder_learned_pos = args.get("encoder_learned_pos", True)
+    args.decoder_embed_path = args.get("decoder_embed_path", None)
+    args.decoder_embed_dim = args.get("decoder_embed_dim", args.encoder_embed_dim)
+    args.decoder_ffn_embed_dim = args.get("decoder_ffn_embed_dim", args.encoder_ffn_embed_dim)
+    args.decoder_layers = args.get("decoder_layers", 12)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 16)
+    args.decoder_normalize_before = args.get("decoder_normalize_before", False)
+    args.decoder_learned_pos = args.get("decoder_learned_pos", True)
+    args.attention_dropout = args.get("attention_dropout", 0.0)
+    args.relu_dropout = args.get("relu_dropout", 0.0)
+    args.dropout = args.get("dropout", 0.1)
+    args.max_target_positions = args.get("max_target_positions", 1024)
+    args.max_source_positions = args.get("max_source_positions", 1024)
+    args.adaptive_softmax_cutoff = args.get("adaptive_softmax_cutoff", None)
+    args.adaptive_softmax_dropout = args.get("adaptive_softmax_dropout", 0)
+    args.share_decoder_input_output_embed = args.get("share_decoder_input_output_embed", True)
+    args.share_all_embeddings = args.get("share_all_embeddings", True)
 
-    args.decoder_output_dim = getattr(
-        args, "decoder_output_dim", args.decoder_embed_dim
-    )
-    args.decoder_input_dim = getattr(args, "decoder_input_dim", args.decoder_embed_dim)
+    args.decoder_output_dim = args.get("decoder_output_dim", args.decoder_embed_dim)
+    args.decoder_input_dim = args.get("decoder_input_dim", args.decoder_embed_dim)
 
-    args.no_scale_embedding = getattr(args, "no_scale_embedding", True)
-    args.layernorm_embedding = getattr(args, "layernorm_embedding", True)
+    args.no_scale_embedding = args.get("no_scale_embedding", True)
+    args.layernorm_embedding = args.get("layernorm_embedding", True)
 
-    args.activation_fn = getattr(args, "activation_fn", "gelu")
-    args.pooler_activation_fn = getattr(args, "pooler_activation_fn", "tanh")
-    args.pooler_dropout = getattr(args, "pooler_dropout", 0.0)
+    args.activation_fn = args.get("activation_fn", "gelu")
+    args.pooler_activation_fn = args.get("pooler_activation_fn", "tanh")
+    args.pooler_dropout = args.get("pooler_dropout", 0.0)
 
 
 @register_model_architecture("bart", "bart_base")
 def bart_base_architecture(args):
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 768)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 4 * 768)
-    args.encoder_layers = getattr(args, "encoder_layers", 6)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 12)
-    args.decoder_layers = getattr(args, "decoder_layers", 6)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 12)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 768)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 4 * 768)
+    args.encoder_layers = args.get("encoder_layers", 6)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 12)
+    args.decoder_layers = args.get("decoder_layers", 6)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 12)
+    bart_large_architecture(args)
+
+@register_model_architecture("bart", "albart_base")
+def albart_base_architecture(args):
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 768)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 4 * 768)
+    args.encoder_layers = args.get("encoder_layers", 6)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 12)
+    args.decoder_layers = args.get("decoder_layers", 6)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 12)
+    args.shared_layers = args.get("shared_layers", True)
+    bart_large_architecture(args)
+
+@register_model_architecture("bart", "albart_mini")
+def albart_mini_architecture(args):
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 256)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 4 * 256)
+    args.encoder_layers = args.get("encoder_layers", 2)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 8)
+    args.decoder_layers = args.get("decoder_layers", 2)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 8)
+    args.shared_layers = args.get("shared_layers", True)
     bart_large_architecture(args)
 
 
 @register_model_architecture("bart", "mbart_large")
 def mbart_large_architecture(args):
-    args.no_scale_embedding = getattr(args, "no_scale_embedding", False)
+    args.no_scale_embedding = args.get("no_scale_embedding", False)
     bart_large_architecture(args)
 
 
 @register_model_architecture("bart", "mbart_base")
 def mbart_base_architecture(args):
-    args.no_scale_embedding = getattr(args, "no_scale_embedding", False)
+    args.no_scale_embedding = args.get("no_scale_embedding", False)
     bart_base_architecture(args)
 
 
 @register_model_architecture("bart", "mbart_base_wmt20")
 def mbart_base_wmt20_architecture(args):
-    args.layernorm_embedding = getattr(args, "layernorm_embedding", False)
+    args.layernorm_embedding = args.get("layernorm_embedding", False)
     mbart_base_architecture(args)

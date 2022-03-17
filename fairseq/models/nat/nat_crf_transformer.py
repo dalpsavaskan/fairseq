@@ -113,9 +113,9 @@ class NACRFTransformerModel(NATransformerModel):
 
 @register_model_architecture("nacrf_transformer", "nacrf_transformer")
 def nacrf_base_architecture(args):
-    args.crf_lowrank_approx = getattr(args, "crf_lowrank_approx", 32)
-    args.crf_beam_approx = getattr(args, "crf_beam_approx", 64)
-    args.word_ins_loss_factor = getattr(args, "word_ins_loss_factor", 0.5)
-    args.encoder_normalize_before = getattr(args, "encoder_normalize_before", True)
-    args.decoder_normalize_before = getattr(args, "decoder_normalize_before", True)
+    args.crf_lowrank_approx = args.get("crf_lowrank_approx", 32)
+    args.crf_beam_approx = args.get("crf_beam_approx", 64)
+    args.word_ins_loss_factor = args.get("word_ins_loss_factor", 0.5)
+    args.encoder_normalize_before = args.get("encoder_normalize_before", True)
+    args.decoder_normalize_before = args.get("decoder_normalize_before", True)
     base_architecture(args)

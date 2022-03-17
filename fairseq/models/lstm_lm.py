@@ -62,11 +62,10 @@ class LSTMLanguageModel(FairseqLanguageModel):
         # make sure all arguments are present in older models
         base_architecture(args)
 
-        if getattr(args, "max_target_positions", None) is not None:
+        if args.get("max_target_positions", None) is not None:
             max_target_positions = args.max_target_positions
         else:
-            max_target_positions = getattr(
-                args, "tokens_per_sample", DEFAULT_MAX_TARGET_POSITIONS
+            max_target_positions = args.get("tokens_per_sample", DEFAULT_MAX_TARGET_POSITIONS
             )
 
         def load_pretrained_embedding_from_file(embed_path, dictionary, embed_dim):
@@ -122,21 +121,18 @@ class LSTMLanguageModel(FairseqLanguageModel):
 
 @register_model_architecture("lstm_lm", "lstm_lm")
 def base_architecture(args):
-    args.dropout = getattr(args, "dropout", 0.1)
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 512)
-    args.decoder_embed_path = getattr(args, "decoder_embed_path", None)
-    args.decoder_hidden_size = getattr(
-        args, "decoder_hidden_size", args.decoder_embed_dim
+    args.dropout = args.get("dropout", 0.1)
+    args.decoder_embed_dim = args.get("decoder_embed_dim", 512)
+    args.decoder_embed_path = args.get("decoder_embed_path", None)
+    args.decoder_hidden_size = args.get("decoder_hidden_size", args.decoder_embed_dim
     )
-    args.decoder_layers = getattr(args, "decoder_layers", 1)
-    args.decoder_out_embed_dim = getattr(args, "decoder_out_embed_dim", 512)
-    args.decoder_attention = getattr(args, "decoder_attention", "0")
-    args.decoder_dropout_in = getattr(args, "decoder_dropout_in", args.dropout)
-    args.decoder_dropout_out = getattr(args, "decoder_dropout_out", args.dropout)
-    args.share_decoder_input_output_embed = getattr(
-        args, "share_decoder_input_output_embed", False
+    args.decoder_layers = args.get("decoder_layers", 1)
+    args.decoder_out_embed_dim = args.get("decoder_out_embed_dim", 512)
+    args.decoder_attention = args.get("decoder_attention", "0")
+    args.decoder_dropout_in = args.get("decoder_dropout_in", args.dropout)
+    args.decoder_dropout_out = args.get("decoder_dropout_out", args.dropout)
+    args.share_decoder_input_output_embed = args.get("share_decoder_input_output_embed", False
     )
-    args.adaptive_softmax_cutoff = getattr(
-        args, "adaptive_softmax_cutoff", "10000,50000,200000"
+    args.adaptive_softmax_cutoff = args.get("adaptive_softmax_cutoff", "10000,50000,200000"
     )
-    args.residuals = getattr(args, "residuals", False)
+    args.residuals = args.get("residuals", False)

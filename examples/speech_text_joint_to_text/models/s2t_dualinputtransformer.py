@@ -212,7 +212,7 @@ class DualInputEncoder(FairseqEncoder):
                 spch_encoder,
                 2 * len(args.conv_kernel_sizes.split(",")),
                 args.input_feat_per_channel,
-                adapter_type=getattr(args, "speech_encoder_adapter_type", "None"),
+                adapter_type=args.get("speech_encoder_adapter_type", "None"),
                 adapter_dim=args.encoder_embed_dim,
             )
         return spch_encoder
@@ -786,7 +786,7 @@ class DualInputS2TTransformerModel(FairseqEncoderDecoderModel):
             args, task.src_dict, spch_encoder
         )
         cross_attentive_loss_before_last_layer = (
-            0 if getattr(args, "attentive_cost_regularization", 0.0) > 0.0 else -1
+            0 if args.get("attentive_cost_regularization", 0.0) > 0.0 else -1
         )
         encoder = DualInputEncoder(
             args,
@@ -859,13 +859,12 @@ class DualInputS2TTransformerModel(FairseqEncoderDecoderModel):
             task.target_dictionary.pad(),
         )
         compute_cross_attentive_loss = (
-            True if getattr(args, "attentive_cost_regularization", 0.0) > 0.0 else False
+            True if args.get("attentive_cost_regularization", 0.0) > 0.0 else False
         )
-        cross_attentive_loss_without_norm = getattr(
-            args, "attentive_cost_without_normalize", False
+        cross_attentive_loss_without_norm = args.get("attentive_cost_without_normalize", False
         )
         cross_attentive_loss_reverse = (
-            False  # getattr(args, "attentive_cost_reverse", False)
+            False  # args.get("attentive_cost_reverse", False)
         )
 
         text_decoder = TransformerDecoder(dec_cfg, task.target_dictionary, dec_emb)
@@ -988,106 +987,101 @@ class DualInputS2TTransformerModel(FairseqEncoderDecoderModel):
     "dual_input_s2t_transformer", "dualinputs2ttransformer_base"
 )
 def dualinputs2ttransformer_base(args):
-    args.encoder_freezing_updates = getattr(args, "encoder_freezing_updates", 0)
+    args.encoder_freezing_updates = args.get("encoder_freezing_updates", 0)
     # Convolutional subsampler
-    args.input_feat_per_channel = getattr(args, "input_feat_per_channel", 80)
-    args.conv_kernel_sizes = getattr(args, "conv_kernel_sizes", "5,5")
-    args.conv_channels = getattr(args, "conv_channels", 1024)
+    args.input_feat_per_channel = args.get("input_feat_per_channel", 80)
+    args.conv_kernel_sizes = args.get("conv_kernel_sizes", "5,5")
+    args.conv_channels = args.get("conv_channels", 1024)
     # Transformer
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 512)
-    args.encoder_text_embed_dim = getattr(
-        args, "encoder_text_embed_dim", args.encoder_embed_dim
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 512)
+    args.encoder_text_embed_dim = args.get("encoder_text_embed_dim", args.encoder_embed_dim
     )
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 2048)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 8)
-    args.encoder_normalize_before = getattr(args, "encoder_normalize_before", True)
-    args.encoder_layerdrop = getattr(args, "encoder_layerdrop", 0)
-    args.encoder_learned_pos = getattr(args, "encoder_learned_pos", False)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 2048)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 8)
+    args.encoder_normalize_before = args.get("encoder_normalize_before", True)
+    args.encoder_layerdrop = args.get("encoder_layerdrop", 0)
+    args.encoder_learned_pos = args.get("encoder_learned_pos", False)
 
-    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", args.encoder_embed_dim)
-    args.decoder_ffn_embed_dim = getattr(
-        args, "decoder_ffn_embed_dim", args.encoder_ffn_embed_dim
+    args.decoder_embed_dim = args.get("decoder_embed_dim", args.encoder_embed_dim)
+    args.decoder_ffn_embed_dim = args.get("decoder_ffn_embed_dim", args.encoder_ffn_embed_dim
     )
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 8)
-    args.decoder_normalize_before = getattr(args, "decoder_normalize_before", True)
-    args.decoder_learned_pos = getattr(args, "decoder_learned_pos", False)
-    args.dropout = getattr(args, "dropout", 0.1)
-    args.attention_dropout = getattr(args, "attention_dropout", args.dropout)
-    args.activation_dropout = getattr(args, "activation_dropout", args.dropout)
-    args.activation_fn = getattr(args, "activation_fn", "relu")
-    args.adaptive_softmax_cutoff = getattr(args, "adaptive_softmax_cutoff", None)
-    args.adaptive_softmax_dropout = getattr(args, "adaptive_softmax_dropout", 0)
-    args.tie_adaptive_weights = getattr(args, "tie_adaptive_weights", False)
-    args.share_decoder_input_output_embed = getattr(
-        args, "share_decoder_input_output_embed", False
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 8)
+    args.decoder_normalize_before = args.get("decoder_normalize_before", True)
+    args.decoder_learned_pos = args.get("decoder_learned_pos", False)
+    args.dropout = args.get("dropout", 0.1)
+    args.attention_dropout = args.get("attention_dropout", args.dropout)
+    args.activation_dropout = args.get("activation_dropout", args.dropout)
+    args.activation_fn = args.get("activation_fn", "relu")
+    args.adaptive_softmax_cutoff = args.get("adaptive_softmax_cutoff", None)
+    args.adaptive_softmax_dropout = args.get("adaptive_softmax_dropout", 0)
+    args.tie_adaptive_weights = args.get("tie_adaptive_weights", False)
+    args.share_decoder_input_output_embed = args.get("share_decoder_input_output_embed", False
     )
-    args.no_token_positional_embeddings = getattr(
-        args, "no_token_positional_embeddings", False
+    args.no_token_positional_embeddings = args.get("no_token_positional_embeddings", False
     )
-    args.adaptive_input = getattr(args, "adaptive_input", False)
-    args.decoder_layerdrop = getattr(args, "decoder_layerdrop", 0.0)
-    args.decoder_output_dim = getattr(
-        args, "decoder_output_dim", args.decoder_embed_dim
+    args.adaptive_input = args.get("adaptive_input", False)
+    args.decoder_layerdrop = args.get("decoder_layerdrop", 0.0)
+    args.decoder_output_dim = args.get("decoder_output_dim", args.decoder_embed_dim
     )
-    args.layernorm_embedding = getattr(args, "layernorm_embedding", False)
-    args.no_scale_embedding = getattr(args, "no_scale_embedding", False)
-    args.quant_noise_pq = getattr(args, "quant_noise_pq", 0)
+    args.layernorm_embedding = args.get("layernorm_embedding", False)
+    args.no_scale_embedding = args.get("no_scale_embedding", False)
+    args.quant_noise_pq = args.get("quant_noise_pq", 0)
 
-    args.speech_encoder_layers = getattr(args, "speech_encoder_layers", 10)
-    args.text_encoder_layers = getattr(args, "text_encoder_layers", 6)
-    args.encoder_shared_layers = getattr(args, "encoder_shared_layers", 0)
-    args.decoder_layers = getattr(args, "decoder_layers", 6)
+    args.speech_encoder_layers = args.get("speech_encoder_layers", 10)
+    args.text_encoder_layers = args.get("text_encoder_layers", 6)
+    args.encoder_shared_layers = args.get("encoder_shared_layers", 0)
+    args.decoder_layers = args.get("decoder_layers", 6)
 
-    args.add_speech_eos = getattr(args, "add_speech_eos", False)
+    args.add_speech_eos = args.get("add_speech_eos", False)
 
 
 @register_model_architecture("dual_input_s2t_transformer", "dualinputs2ttransformer_s")
 def dualinputs2ttransformer_s(args):
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 256)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 256 * 4)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 4)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 4)
-    args.dropout = getattr(args, "dropout", 0.1)
-    args.speech_encoder_layers = getattr(args, "speech_encoder_layers", 7)
-    args.text_encoder_layers = getattr(args, "text_encoder_layers", 7)
-    args.decoder_layers = getattr(args, "decoder_layers", 7)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 256)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 256 * 4)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 4)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 4)
+    args.dropout = args.get("dropout", 0.1)
+    args.speech_encoder_layers = args.get("speech_encoder_layers", 7)
+    args.text_encoder_layers = args.get("text_encoder_layers", 7)
+    args.decoder_layers = args.get("decoder_layers", 7)
     dualinputs2ttransformer_base(args)
 
 
 @register_model_architecture("dual_input_s2t_transformer", "dualinputs2ttransformer_m")
 def dualinputs2ttransformer_m(args):
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 512)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 512 * 4)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 8)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 8)
-    args.dropout = getattr(args, "dropout", 0.15)
-    args.speech_encoder_layers = getattr(args, "speech_encoder_layers", 10)
-    args.text_encoder_layers = getattr(args, "text_encoder_layers", 6)
-    args.decoder_layers = getattr(args, "decoder_layers", 6)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 512)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 512 * 4)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 8)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 8)
+    args.dropout = args.get("dropout", 0.15)
+    args.speech_encoder_layers = args.get("speech_encoder_layers", 10)
+    args.text_encoder_layers = args.get("text_encoder_layers", 6)
+    args.decoder_layers = args.get("decoder_layers", 6)
     dualinputs2ttransformer_base(args)
 
 
 @register_model_architecture("dual_input_s2t_transformer", "dualinputs2ttransformer_b")
 def dualinputs2ttransformer_b(args):
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 768)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 768 * 4)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 12)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 12)
-    args.dropout = getattr(args, "dropout", 0.15)
-    args.speech_encoder_layers = getattr(args, "speech_encoder_layers", 12)
-    args.text_encoder_layers = getattr(args, "text_encoder_layers", 6)
-    args.decoder_layers = getattr(args, "decoder_layers", 6)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 768)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 768 * 4)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 12)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 12)
+    args.dropout = args.get("dropout", 0.15)
+    args.speech_encoder_layers = args.get("speech_encoder_layers", 12)
+    args.text_encoder_layers = args.get("text_encoder_layers", 6)
+    args.decoder_layers = args.get("decoder_layers", 6)
     dualinputs2ttransformer_base(args)
 
 
 @register_model_architecture("dual_input_s2t_transformer", "dualinputs2ttransformer_l")
 def dualinputs2ttransformer_l(args):
-    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 1024)
-    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 1024 * 4)
-    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 16)
-    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 16)
-    args.dropout = getattr(args, "dropout", 0.2)
-    args.speech_encoder_layers = getattr(args, "speech_encoder_layers", 12)
-    args.text_encoder_layers = getattr(args, "text_encoder_layers", 6)
-    args.decoder_layers = getattr(args, "decoder_layers", 6)
+    args.encoder_embed_dim = args.get("encoder_embed_dim", 1024)
+    args.encoder_ffn_embed_dim = args.get("encoder_ffn_embed_dim", 1024 * 4)
+    args.encoder_attention_heads = args.get("encoder_attention_heads", 16)
+    args.decoder_attention_heads = args.get("decoder_attention_heads", 16)
+    args.dropout = args.get("dropout", 0.2)
+    args.speech_encoder_layers = args.get("speech_encoder_layers", 12)
+    args.text_encoder_layers = args.get("text_encoder_layers", 6)
+    args.decoder_layers = args.get("decoder_layers", 6)
     dualinputs2ttransformer_base(args)

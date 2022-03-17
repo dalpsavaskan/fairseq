@@ -90,7 +90,7 @@ class TranslationFromPretrainedBARTTask(TranslationTask):
         )
 
     def build_generator(self, models, args, **unused):
-        if getattr(args, "score_reference", False):
+        if args.get("score_reference", False):
             from fairseq.sequence_scorer import SequenceScorer
 
             return SequenceScorer(
@@ -103,16 +103,16 @@ class TranslationFromPretrainedBARTTask(TranslationTask):
             return SequenceGenerator(
                 models,
                 self.target_dictionary,
-                beam_size=getattr(args, "beam", 5),
-                max_len_a=getattr(args, "max_len_a", 0),
-                max_len_b=getattr(args, "max_len_b", 200),
-                min_len=getattr(args, "min_len", 1),
-                normalize_scores=(not getattr(args, "unnormalized", False)),
-                len_penalty=getattr(args, "lenpen", 1),
-                unk_penalty=getattr(args, "unkpen", 0),
-                temperature=getattr(args, "temperature", 1.0),
-                match_source_len=getattr(args, "match_source_len", False),
-                no_repeat_ngram_size=getattr(args, "no_repeat_ngram_size", 0),
+                beam_size=args.get("beam", 5),
+                max_len_a=args.get("max_len_a", 0),
+                max_len_b=args.get("max_len_b", 200),
+                min_len=args.get("min_len", 1),
+                normalize_scores=(not args.get("unnormalized", False)),
+                len_penalty=args.get("lenpen", 1),
+                unk_penalty=args.get("unkpen", 0),
+                temperature=args.get("temperature", 1.0),
+                match_source_len=args.get("match_source_len", False),
+                no_repeat_ngram_size=args.get("no_repeat_ngram_size", 0),
                 eos=self.tgt_dict.index("[{}]".format(self.args.target_lang)),
             )
 
