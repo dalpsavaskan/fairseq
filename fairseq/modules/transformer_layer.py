@@ -8,7 +8,7 @@ from typing import Dict, List, Optional
 import torch
 import torch.nn as nn
 from fairseq import utils
-from fairseq.modules import LayerNorm, MultiheadAttention
+from fairseq.modules import LayerNorm, MultiheadAttention, RMSNorm
 from fairseq.modules.fairseq_dropout import FairseqDropout
 from fairseq.modules.quant_noise import quant_noise
 from torch import Tensor
@@ -40,7 +40,7 @@ class TransformerEncoderLayerBase(nn.Module):
         self.quant_noise = cfg.quant_noise.pq
         self.quant_noise_block_size = cfg.quant_noise.pq_block_size
         self.self_attn = self.build_self_attention(self.embed_dim, cfg)
-        self.self_attn_layer_norm = LayerNorm(self.embed_dim, export=cfg.export)
+        self.self_attn_layer_norm = LayerNorm(self.embed_dim, export=cfg.export) if not cfg.use_rmsnorm else RMSNorm(self.embed_dim, export=cfg.export)
         self.dropout_module = FairseqDropout(
             cfg.dropout, module_name=self.__class__.__name__
         )
@@ -55,27 +55,29 @@ class TransformerEncoderLayerBase(nn.Module):
         self.normalize_before = cfg.encoder.normalize_before
         self.fc1 = self.build_fc1(
             self.embed_dim,
-            cfg.encoder.ffn_embed_dim,
+            cfg.encoder.ffn_embed_dim * 2 if cfg.activation_fn == "gated_relu" else cfg.encoder.ffn_embed_dim,
             self.quant_noise,
             self.quant_noise_block_size,
+            cfg.ffn_bias
         )
         self.fc2 = self.build_fc2(
             cfg.encoder.ffn_embed_dim,
             self.embed_dim,
             self.quant_noise,
             self.quant_noise_block_size,
+            cfg.ffn_bias
         )
 
-        self.final_layer_norm = LayerNorm(self.embed_dim, export=cfg.export)
+        self.final_layer_norm = LayerNorm(self.embed_dim, export=cfg.export) if not cfg.use_rmsnorm else RMSNorm(self.embed_dim, export=cfg.export)
 
-    def build_fc1(self, input_dim, output_dim, q_noise, qn_block_size):
+    def build_fc1(self, input_dim, output_dim, q_noise, qn_block_size, bias):
         return quant_noise(
-            nn.Linear(input_dim, output_dim), p=q_noise, block_size=qn_block_size
+            nn.Linear(input_dim, output_dim, bias=bias), p=q_noise, block_size=qn_block_size
         )
 
-    def build_fc2(self, input_dim, output_dim, q_noise, qn_block_size):
+    def build_fc2(self, input_dim, output_dim, q_noise, qn_block_size, bias):
         return quant_noise(
-            nn.Linear(input_dim, output_dim), p=q_noise, block_size=qn_block_size
+            nn.Linear(input_dim, output_dim, bias=bias), p=q_noise, block_size=qn_block_size
         )
 
     def _get_fc_rank(self, remove_num: int) -> List[int]:
@@ -141,6 +143,7 @@ class TransformerEncoderLayerBase(nn.Module):
             self_attention=True,
             q_noise=self.quant_noise,
             qn_block_size=self.quant_noise_block_size,
+            bias=cfg.attention_bias
         )
 
     def residual_connection(self, x, residual):
@@ -275,7 +278,7 @@ class TransformerDecoderLayerBase(nn.Module):
             add_zero_attn=add_zero_attn,
         )
         self.attn_ln = (
-            LayerNorm(self.embed_dim)
+            ( LayerNorm(self.embed_dim) if not cfg.use_rmsnorm else RMSNorm(self.embed_dim, export=cfg.export) )
             if utils.safe_getattr(cfg, "scale_attn", False)
             else None
         )
@@ -298,17 +301,17 @@ class TransformerDecoderLayerBase(nn.Module):
         )
         self.normalize_before = cfg.decoder.normalize_before
 
-        self.self_attn_layer_norm = LayerNorm(self.embed_dim, export=cfg.export)
+        self.self_attn_layer_norm = LayerNorm(self.embed_dim, export=cfg.export) if not cfg.use_rmsnorm else RMSNorm(self.embed_dim, export=cfg.export)
 
         if no_encoder_attn:
             self.encoder_attn = None
             self.encoder_attn_layer_norm = None
         else:
             self.encoder_attn = self.build_encoder_attention(self.embed_dim, cfg)
-            self.encoder_attn_layer_norm = LayerNorm(self.embed_dim, export=cfg.export)
+            self.encoder_attn_layer_norm = LayerNorm(self.embed_dim, export=cfg.export) if not cfg.use_rmsnorm else RMSNorm(self.embed_dim, export=cfg.export)
 
         self.ffn_layernorm = (
-            LayerNorm(cfg.decoder.ffn_embed_dim)
+            (LayerNorm(cfg.decoder.ffn_embed_dim) if not cfg.use_rmsnorm else RMSNorm(self.embed_dim, export=cfg.export))
             if utils.safe_getattr(cfg, "scale_fc", False)
             else None
         )
@@ -325,27 +328,29 @@ class TransformerDecoderLayerBase(nn.Module):
 
         self.fc1 = self.build_fc1(
             self.embed_dim,
-            cfg.decoder.ffn_embed_dim,
+            cfg.decoder.ffn_embed_dim * 2 if cfg.activation_fn == "gated_relu" else cfg.decoder.ffn_embed_dim,
             self.quant_noise,
             self.quant_noise_block_size,
+            cfg.ffn_bias
         )
         self.fc2 = self.build_fc2(
             cfg.decoder.ffn_embed_dim,
             self.embed_dim,
             self.quant_noise,
             self.quant_noise_block_size,
+            cfg.ffn_bias
         )
 
-        self.final_layer_norm = LayerNorm(self.embed_dim, export=cfg.export)
+        self.final_layer_norm = LayerNorm(self.embed_dim, export=cfg.export) if not cfg.use_rmsnorm else RMSNorm(self.embed_dim, export=cfg.export)
         self.need_attn = True
 
         self.onnx_trace = False
 
-    def build_fc1(self, input_dim, output_dim, q_noise, qn_block_size):
-        return quant_noise(nn.Linear(input_dim, output_dim), q_noise, qn_block_size)
+    def build_fc1(self, input_dim, output_dim, q_noise, qn_block_size, bias):
+        return quant_noise(nn.Linear(input_dim, output_dim, bias=bias), q_noise, qn_block_size)
 
-    def build_fc2(self, input_dim, output_dim, q_noise, qn_block_size):
-        return quant_noise(nn.Linear(input_dim, output_dim), q_noise, qn_block_size)
+    def build_fc2(self, input_dim, output_dim, q_noise, qn_block_size, bias):
+        return quant_noise(nn.Linear(input_dim, output_dim, bias=bias), q_noise, qn_block_size)
 
     def build_self_attention(
         self, embed_dim, cfg, add_bias_kv=False, add_zero_attn=False
@@ -359,6 +364,7 @@ class TransformerDecoderLayerBase(nn.Module):
             self_attention=not cfg.cross_self_attention,
             q_noise=self.quant_noise,
             qn_block_size=self.quant_noise_block_size,
+            bias=cfg.attention_bias
         )
 
     def build_encoder_attention(self, embed_dim, cfg):
@@ -371,6 +377,7 @@ class TransformerDecoderLayerBase(nn.Module):
             encoder_decoder_attention=True,
             q_noise=self.quant_noise,
             qn_block_size=self.quant_noise_block_size,
+            bias=cfg.attention_bias
         )
 
     def prepare_for_onnx_export_(self):

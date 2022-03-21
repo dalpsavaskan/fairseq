@@ -20,6 +20,7 @@ from fairseq.modules import (
     FairseqDropout,
     LayerDropModuleList,
     LayerNorm,
+    RMSNorm,
     PositionalEmbedding,
     SinusoidalPositionalEmbedding,
     transformer_layer,
@@ -105,7 +106,7 @@ class TransformerDecoderBase(FairseqIncrementalDecoder):
             else None
         )
         if cfg.layernorm_embedding:
-            self.layernorm_embedding = LayerNorm(embed_dim, export=cfg.export)
+            self.layernorm_embedding = LayerNorm(embed_dim, export=cfg.export) if not cfg.use_rmsnorm else RMSNorm(embed_dim, export=cfg.export)
         else:
             self.layernorm_embedding = None
 
@@ -125,7 +126,7 @@ class TransformerDecoderBase(FairseqIncrementalDecoder):
         self.num_layers = len(self.layers)
 
         if cfg.decoder.normalize_before and not cfg.no_decoder_final_norm:
-            self.layer_norm = LayerNorm(embed_dim, export=cfg.export)
+            self.layer_norm = LayerNorm(embed_dim, export=cfg.export) if not cfg.use_rmsnorm else RMSNorm(embed_dim, export=cfg.export)
         else:
             self.layer_norm = None
 

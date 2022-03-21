@@ -5,6 +5,7 @@
 
 import functools
 import operator
+from numpy import dtype
 
 import torch
 import torch.nn.functional as F
@@ -240,7 +241,7 @@ class AdaptiveSoftmax(nn.Module):
             target_idxs = None
 
         head_y = self.head(input)
-        log_probs = head_y.new_zeros(input.size(0), self.vocab_size)
+        log_probs = head_y.new_zeros(input.size(0), self.vocab_size, dtype=torch.float32)
 
         head_sz = self.cutoff[0] + len(self.tail)
         log_probs[:, :head_sz] = self.lsm(head_y)
@@ -252,17 +253,13 @@ class AdaptiveSoftmax(nn.Module):
 
             if target_idxs is None:
                 tail_out = log_probs[:, start:end]
-                tail_out.copy_(self.tail[i](input))
-                log_probs[:, start:end] = self.lsm(tail_out).add_(
-                    tail_priors[:, i, None]
-                )
+                tail_out = (self.tail[i](input))
+                log_probs[:, start:end] = self.lsm(tail_out) + tail_priors[:, i, None]
             elif target_idxs[i] is not None:
                 idxs = target_idxs[i]
                 tail_out = log_probs[idxs, start:end]
-                tail_out.copy_(self.tail[i](input[idxs]))
-                log_probs[idxs, start:end] = self.lsm(tail_out).add_(
-                    tail_priors[idxs, i, None]
-                )
+                tail_out = (self.tail[i](input[idxs]))
+                log_probs[idxs, start:end] = self.lsm(tail_out) + tail_priors[idxs, i, None]
 
         log_probs = log_probs.view(bsz, length, -1)
         return log_probs

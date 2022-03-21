@@ -32,6 +32,7 @@ from .location_attention import LocationAttention
 from .lstm_cell_with_zoneout import LSTMCellWithZoneOut
 from .multihead_attention import MultiheadAttention
 from .positional_embedding import PositionalEmbedding
+from .rms_norm import RMSNorm
 from .same_pad import SamePad
 from .scalar_bias import ScalarBias
 from .sinusoidal_positional_embedding import SinusoidalPositionalEmbedding
@@ -85,6 +86,7 @@ __all__ = [
     "LSTMCellWithZoneOut",
     "MultiheadAttention",
     "PositionalEmbedding",
+    "RMSNorm",
     "SamePad",
     "ScalarBias",
     "SinusoidalPositionalEmbedding",

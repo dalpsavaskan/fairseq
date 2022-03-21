@@ -103,7 +103,16 @@ class TransformerConfig(FairseqDataclass):
             "alias": "--relu-dropout",
         },
     )
-    adaptive_input: bool = False
+    adaptive_input: bool = field(
+        default=False, metadata={"help": "if set, uses adaptive input"}
+    )
+    adaptive_input_factor: float = field(
+        default=4, metadata={"help": "adaptive input factor"}
+    )
+    adaptive_input_cutoff: Optional[str] = field(
+        default=None,
+        metadata={"help": "comma separated list of adaptive input cutoff points."},
+    )
     encoder: EncDecBaseConfig = EncDecBaseConfig()
     # TODO should really be in the encoder config
     max_source_positions: int = field(
@@ -221,7 +230,18 @@ class TransformerConfig(FairseqDataclass):
         default=False,
         metadata={"help": "make the layernorm exportable with torchscript."},
     )
-
+    use_rmsnorm: bool = field(
+        default=False,
+        metadata={"help": "use RMS Norm for the layernorm layers instead of LayerNorm"}
+    )
+    ffn_bias: bool = field(
+        default=True,
+        metadata={"help": "add bias to the FFN layers"}
+    )
+    attention_bias: bool = field(
+        default=True,
+        metadata={"help": "add bias to the attention layers"}
+    )
     # copied from transformer_lm but expected in transformer_decoder:
     no_decoder_final_norm: bool = field(
         default=False,

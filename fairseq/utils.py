@@ -462,7 +462,7 @@ def resolve_max_positions(*args):
 
 
 def import_user_module(args):
-    module_path = args.get("user_dir", None)
+    module_path = getattr(args, "user_dir", None)
     if module_path is not None:
         module_path = os.path.abspath(args.user_dir)
         if not os.path.exists(module_path) and not os.path.isfile(
@@ -544,6 +544,9 @@ def deprecation_warning(message, stacklevel=3):
 def relu_squared(x: torch.Tensor):
     return F.relu(x).pow(2)
 
+def gated_relu(x: torch.Tensor):
+    s = x.size(-1) // 2
+    return F.relu(x[..., :s]) * x[..., s:]
 
 def get_activation_fn(activation: str) -> Callable:
     """Returns the activation function corresponding to `activation`"""
@@ -553,6 +556,8 @@ def get_activation_fn(activation: str) -> Callable:
         return F.relu
     elif activation == "relu_squared":
         return relu_squared
+    elif activation == "gated_relu":
+        return gated_relu
     elif activation == "gelu":
         return gelu
     elif activation == "gelu_fast":
@@ -575,6 +580,7 @@ def get_activation_fn(activation: str) -> Callable:
 def get_available_activation_fns() -> List:
     return [
         "relu",
+        "gated_relu",
         "gelu",
         "gelu_fast",  # deprecated
         "gelu_accurate",

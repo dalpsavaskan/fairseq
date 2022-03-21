@@ -9,7 +9,7 @@ import torch
 import torch.nn as nn
 from torch import Tensor
 
-from fairseq import utils
+from fairseq import utils, options
 from fairseq.dataclass.utils import gen_parser_from_dataclass
 from fairseq.distributed import fsdp_wrap
 from fairseq.models import FairseqEncoderDecoderModel
@@ -19,6 +19,7 @@ from fairseq.models.transformer import (
     TransformerEncoderBase,
 )
 
+from fairseq.modules import AdaptiveInput
 
 class TransformerModelBase(FairseqEncoderDecoderModel):
     """
@@ -107,11 +108,23 @@ class TransformerModelBase(FairseqEncoderDecoderModel):
         num_embeddings = len(dictionary)
         padding_idx = dictionary.pad()
 
-        emb = Embedding(num_embeddings, embed_dim, padding_idx)
-        # if provided, load from preloaded dictionaries
-        if path:
-            embed_dict = utils.parse_embedding(path)
-            utils.load_embedding(embed_dict, dictionary, emb)
+        if cfg.adaptive_input:
+            emb = AdaptiveInput(
+                num_embeddings,
+                padding_idx,
+                embed_dim,
+                cfg.adaptive_input_factor,
+                embed_dim,
+                options.eval_str_list(cfg.adaptive_input_cutoff, type=int),
+                cfg.quant_noise_pq,
+                cfg.quant_noise_pq_block_size,
+            )
+        else:
+            emb = Embedding(num_embeddings, embed_dim, padding_idx)
+            # if provided, load from preloaded dictionaries
+            if path:
+                embed_dict = utils.parse_embedding(path)
+                utils.load_embedding(embed_dict, dictionary, emb)
         return emb
 
     @classmethod

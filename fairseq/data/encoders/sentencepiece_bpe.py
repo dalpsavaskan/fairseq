@@ -45,11 +45,7 @@ class SentencepieceBPE(object):
             )
 
     def encode(self, x: str) -> str:
-        return " ".join(
-            self.sp.Encode(
-                x, out_type=str, enable_sampling=self.enable_sampling, alpha=self.alpha
-            )
-        )
+        return self.sp.encode_as_pieces(x)
 
     def decode(self, x: str) -> str:
         return x.replace(" ", "").replace("\u2581", " ").strip()
