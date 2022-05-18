@@ -23,6 +23,7 @@ from fairseq.modules import (
     GradMultiply,
     GumbelVectorQuantizer,
     LayerNorm,
+    RMSNorm,
     MultiheadAttention,
     RelPositionalEncoding,
     SamePad,
@@ -68,6 +69,20 @@ class Wav2Vec2Config(FairseqDataclass):
     layer_type: LAYER_TYPE_CHOICES = field(
         default="transformer", metadata={"help": "layer type in encoder"}
     )
+    encoder_shared_layers: bool = field(
+        default=False,
+        metadata={
+            "help": "share layers across the encoder (similar to ALBERT)"
+        },
+    )
+    encoder_ffn_bias: bool = field(
+        default=True,
+        metadata={"help": "add bias to the FFN layers"}
+    )
+    encoder_attention_bias: bool = field(
+        default=True,
+        metadata={"help": "add bias to the attention layers"}
+    )    
     # dropouts
     dropout: float = field(
         default=0.1, metadata={"help": "dropout probability for the transformer"}
@@ -288,7 +303,18 @@ class Wav2Vec2Config(FairseqDataclass):
         metadata={"help": "Positional encoding type to use in conformer"},
     )
     fp16: bool = field(default=False, metadata={"help": "If fp16 is being used"})
-
+    use_rmsnorm: bool = field(
+        default=False,
+        metadata={"help": "use RMS Norm for the layernorm layers instead of LayerNorm"}
+    )
+    ffn_bias: bool = field(
+        default=True,
+        metadata={"help": "add bias to the FFN layers"}
+    )
+    attention_bias: bool = field(
+        default=True,
+        metadata={"help": "add bias to the attention layers"}
+    )
 
 @register_model("wav2vec2", dataclass=Wav2Vec2Config)
 class Wav2Vec2Model(BaseFairseqModel):
@@ -390,7 +416,7 @@ class Wav2Vec2Model(BaseFairseqModel):
             encoder_cls = ConformerEncoder
 
         self.encoder = encoder_cls(cfg)
-        self.layer_norm = LayerNorm(self.embed)
+        self.layer_norm = LayerNorm(self.embed) if not cfg.use_rmsnorm else RMSNorm(self.embed)
 
         self.target_glu = None
         if cfg.target_glu:
@@ -928,6 +954,8 @@ class TransformerEncoder(nn.Module):
                 activation_dropout=args.activation_dropout,
                 activation_fn=args.activation_fn,
                 layer_norm_first=args.layer_norm_first,
+                use_rmsnorm=args.use_rmsnorm,
+                ffn_bias=args.ffn_bias
             )
         elif args.layer_type == "conformer":
             layer = ConformerWav2Vec2EncoderLayer(
@@ -990,11 +1018,16 @@ class TransformerEncoder(nn.Module):
                 args.conv_pos_groups,
             )
 
-        self.layers = nn.ModuleList(
-            [self.build_encoder_layer(args) for _ in range(args.encoder_layers)]
-        )
+
+        self.layers = nn.ModuleList([])
+        if args.encoder_shared_layers:
+            encoder_layer = self.build_encoder_layer(args) 
+            self.layers.extend([ encoder_layer for i in range(args.encoder_layers)])
+        else:
+            self.layers = nn.ModuleList([self.build_encoder_layer(args) for _ in range(args.encoder_layers)])
+
         self.layer_norm_first = args.layer_norm_first
-        self.layer_norm = LayerNorm(self.embedding_dim)
+        self.layer_norm = LayerNorm(self.embedding_dim) if not args.use_rmsnorm else RMSNorm(self.embedding_dim)
         self.layerdrop = args.encoder_layerdrop
 
         self.apply(init_bert_params)
@@ -1188,6 +1221,8 @@ class TransformerSentenceEncoderLayer(nn.Module):
         activation_dropout: float = 0.1,
         activation_fn: str = "relu",
         layer_norm_first: bool = False,
+        use_rmsnorm: bool = False,
+        ffn_bias: bool = True
     ) -> None:
 
         super().__init__()
@@ -1212,12 +1247,12 @@ class TransformerSentenceEncoderLayer(nn.Module):
         self.layer_norm_first = layer_norm_first
 
         # layer norm associated with the self attention layer
-        self.self_attn_layer_norm = LayerNorm(self.embedding_dim)
-        self.fc1 = nn.Linear(self.embedding_dim, ffn_embedding_dim)
-        self.fc2 = nn.Linear(ffn_embedding_dim, self.embedding_dim)
+        self.self_attn_layer_norm = LayerNorm(self.embedding_dim) if not use_rmsnorm else RMSNorm(self.embedding_dim)
+        self.fc1 = nn.Linear(self.embedding_dim, ffn_embedding_dim * 2 if activation_fn == "gated_relu" else ffn_embedding_dim, bias=ffn_bias)
+        self.fc2 = nn.Linear(ffn_embedding_dim, self.embedding_dim, bias=ffn_bias)
 
         # layer norm associated with the position wise feed-forward NN
-        self.final_layer_norm = LayerNorm(self.embedding_dim)
+        self.final_layer_norm = LayerNorm(self.embedding_dim) if not use_rmsnorm else RMSNorm(self.embedding_dim)
 
     def forward(
         self,

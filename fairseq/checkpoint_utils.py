@@ -723,7 +723,7 @@ def prune_state_dict(state_dict, model_cfg: Optional[DictConfig]):
     if model_cfg is not None:
         arch = (
             model_cfg._name
-            if isinstance(model_cfg, DictConfig)
+            if isinstance(model_cfg, DictConfig) and getattr(model_cfg, "_name", None) is not None
             else getattr(model_cfg, "arch", None)
         )
 

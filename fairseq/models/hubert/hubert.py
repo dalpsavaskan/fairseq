@@ -24,7 +24,7 @@ from fairseq.models.wav2vec.wav2vec2 import (
     ConvFeatureExtractionModel,
     TransformerEncoder,
 )
-from fairseq.modules import GradMultiply, LayerNorm
+from fairseq.modules import GradMultiply, LayerNorm, RMSNorm
 from fairseq.tasks.hubert_pretraining import (
     HubertPretrainingConfig,
     HubertPretrainingTask,
@@ -63,7 +63,20 @@ class HubertConfig(FairseqDataclass):
     layer_type: LAYER_TYPE_CHOICES = field(
         default="transformer", metadata={"help": "layer type in encoder"}
     )
-
+    encoder_ffn_bias: bool = field(
+        default=True,
+        metadata={"help": "add bias to the FFN layers"}
+    )
+    encoder_attention_bias: bool = field(
+        default=True,
+        metadata={"help": "add bias to the attention layers"}
+    )
+    encoder_shared_layers: bool = field(
+        default=False,
+        metadata={
+            "help": "share layers across the encoder and the decoder (similar to ALBERT)"
+        },
+    )
     # dropouts
     dropout: float = field(
         default=0.1,
@@ -236,7 +249,18 @@ class HubertConfig(FairseqDataclass):
         metadata={"help": "Positional encoding type to use in conformer"},
     )
     fp16: bool = field(default=False, metadata={"help": "If fp16 is being used"})
-
+    use_rmsnorm: bool = field(
+        default=False,
+        metadata={"help": "use RMS Norm for the layernorm layers instead of LayerNorm"}
+    )
+    ffn_bias: bool = field(
+        default=True,
+        metadata={"help": "add bias to the FFN layers"}
+    )
+    attention_bias: bool = field(
+        default=True,
+        metadata={"help": "add bias to the attention layers"}
+    )
 
 @register_model("hubert", dataclass=HubertConfig)
 class HubertModel(BaseFairseqModel):
@@ -296,7 +320,7 @@ class HubertModel(BaseFairseqModel):
         )
 
         self.encoder = TransformerEncoder(cfg)
-        self.layer_norm = LayerNorm(self.embed)
+        self.layer_norm = LayerNorm(self.embed) if not cfg.use_rmsnorm else RMSNorm(self.embed)
 
         self.target_glu = None
         if cfg.target_glu:

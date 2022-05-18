@@ -234,7 +234,7 @@ def _override_attr(
             # private member, skip
             continue
 
-        val = get_default(v) if not hasattr(args, k) else args.get(k)
+        val = get_default(v) if not hasattr(args, k) else getattr(args, k)
 
         field_type = interpret_dc_type(v.type)
         if (
@@ -332,7 +332,7 @@ def override_module_args(args: Namespace) -> Tuple[List[str], List[str]]:
             if hasattr(args, k):
                 migrate_registry(
                     k,
-                    args.get(k),
+                    getattr(args, k),
                     v["dataclass_registry"],
                     args,
                     overrides,
