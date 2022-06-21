@@ -11,8 +11,7 @@ import sys
 from collections import Counter
 from multiprocessing import Pool
 
-from fairseq.data.encoders.gpt2_bpe import get_encoder
-
+from fairseq.data.encoders.hf_byte_bpe import HuggingFaceByteLevelBPE,HuggingFaceByteLevelBPEConfig
 
 def main():
     """
@@ -94,7 +93,8 @@ class MultiprocessingEncoder(object):
 
     def initializer(self):
         global bpe
-        bpe = get_encoder(self.args.encoder_json, self.args.vocab_bpe)
+        cfg = HuggingFaceByteLevelBPEConfig("bart_config",self.args.vocab_bpe,self.args.encoder_json,True)
+        bpe = HuggingFaceByteLevelBPE(cfg)
 
     def encode(self, line):
         global bpe
